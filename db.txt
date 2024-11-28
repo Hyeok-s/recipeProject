@@ -1,0 +1,53 @@
+-- 메뉴 기본 정보 테이블
+CREATE TABLE recipe_info (
+    RCP_SEQ INT UNSIGNED PRIMARY KEY,
+    RCP_NM VARCHAR(255) NOT NULL,
+    RCP_WAY2 VARCHAR(100),
+    RCP_PAT2 VARCHAR(100),
+    RCP_PARTS_DTLS TEXT,
+    HASH_TAG TEXT
+);
+
+-- 영양 정보 테이블
+CREATE TABLE recipe_nutrition (
+    NUTRITION_ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    INFO_WGT INT,
+    INFO_ENG INT,
+    INFO_CAR INT,
+    INFO_PRO INT,
+    INFO_FAT INT,
+    INFO_NA INT,
+    RCP_SEQ INT UNSIGNED,
+    FOREIGN KEY (RCP_SEQ) REFERENCES recipe_info(RCP_SEQ),
+    INDEX (RCP_SEQ)
+);
+
+-- 이미지 정보 테이블
+CREATE TABLE recipe_image (
+    IMAGE_ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    ATT_FILE_NO_MAIN VARCHAR(255),
+    ATT_FILE_NO_MK VARCHAR(255),
+    RCP_SEQ INT UNSIGNED,
+    FOREIGN KEY (RCP_SEQ) REFERENCES recipe_info(RCP_SEQ),
+    INDEX (RCP_SEQ)
+);
+
+-- 조리 방법 정보 테이블
+CREATE TABLE recipe_manual (
+    MANUAL_ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    STEP_NO INT NOT NULL,                  
+    MANUAL_TEXT TEXT,                      
+    MANUAL_IMG VARCHAR(255),         
+    RCP_SEQ INT UNSIGNED,                           
+    FOREIGN KEY (RCP_SEQ) REFERENCES recipe_info(RCP_SEQ),
+    INDEX (RCP_SEQ)                           
+);
+
+-- 기타 정보 테이블
+CREATE TABLE recipe_tips (
+    TIP_ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    RCP_NA_TIP TEXT,
+    RCP_SEQ INT UNSIGNED,
+    FOREIGN KEY (RCP_SEQ) REFERENCES recipe_info(RCP_SEQ),
+    INDEX (RCP_SEQ)
+);
