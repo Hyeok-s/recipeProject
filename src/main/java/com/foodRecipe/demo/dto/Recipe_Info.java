@@ -14,4 +14,14 @@ public class Recipe_Info {
     private String RCP_PAT2;
     private String RCP_PARTS_DTLS;
     private String HASH_TAG;
+    private String ATT_FILE_NO_MAIN;
+    
+    public Recipe_Info(Integer RCP_SEQ, String RCP_NM, String RCP_WAY2, String RCP_PAT2, String RCP_PARTS_DTLS, String HASH_TAG) {
+        this.RCP_SEQ = RCP_SEQ;
+        this.RCP_NM = RCP_NM;
+        this.RCP_WAY2 = RCP_WAY2;
+        this.RCP_PAT2 = RCP_PAT2;
+        this.RCP_PARTS_DTLS = RCP_PARTS_DTLS;
+        this.HASH_TAG = HASH_TAG;
+    }
 }

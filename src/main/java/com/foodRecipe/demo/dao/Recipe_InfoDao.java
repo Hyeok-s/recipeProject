@@ -16,6 +16,10 @@ public interface Recipe_InfoDao {
 			""")
     void insertRecipeInfo(Recipe_Info recipeInfo);
 
-	@Select("SELECT * FROM Recipe_Info")
-	List<Recipe_Info> showAllRecipe();
+	@Select("""
+			SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, image.ATT_FILE_NO_MAIN FROM Recipe_Info info 
+			INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ
+			""")
+	List<Recipe_Info> findRecipeInfoAndMainImage();	
+	
 }

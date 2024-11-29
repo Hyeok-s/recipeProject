@@ -15,7 +15,7 @@ public class RecipeInfoService {
 		this.recipeInfoDao = recipeInfoDao;
 	}
 	
-	public List<Recipe_Info> showAllRecipe(){
-		return recipeInfoDao.showAllRecipe();
+	public List<Recipe_Info> findRecipeInfoAndMainImage() {
+		return recipeInfoDao.findRecipeInfoAndMainImage();
 	}
 }
