@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.foodRecipe.demo.dao.Recipe_InfoDao;
+import com.foodRecipe.demo.dto.Recipe_Detail;
 import com.foodRecipe.demo.dto.Recipe_Info;
 
 @Service
@@ -17,5 +18,9 @@ public class RecipeInfoService {
 	
 	public List<Recipe_Info> findRecipeInfoAndMainImage() {
 		return recipeInfoDao.findRecipeInfoAndMainImage();
+	}
+
+	public Recipe_Detail findRecipeDetailByRCP_SEQ(Integer RCP_SEQ) {
+		return recipeInfoDao.findRecipeDetailByRCP_SEQ(RCP_SEQ);
 	}
 }

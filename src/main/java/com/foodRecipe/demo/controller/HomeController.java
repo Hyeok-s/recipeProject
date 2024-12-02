@@ -30,7 +30,7 @@ public class HomeController {
 		List<Recipe_Info> recipeInfos =  recipeInfoService.findRecipeInfoAndMainImage();
 		
 		if (recipeInfos != null || !recipeInfos.isEmpty()) {
-			int pageSize = 30;
+			int pageSize = 20;
 			int start = (page - 1) * pageSize;
 			int end = Math.min(start + pageSize, recipeInfos.size());
 
@@ -42,6 +42,8 @@ public class HomeController {
 			model.addAttribute("page", page);
 		    model.addAttribute("pageCnt", pageCnt);
 		}
-		return "main";
+		return "recipe/main";
 	}
+	
+
 }

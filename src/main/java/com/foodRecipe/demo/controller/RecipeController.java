@@ -34,4 +34,5 @@ public class RecipeController {
             return "Failed to save recipes: " + e.getMessage();
         }
     }
+
 }

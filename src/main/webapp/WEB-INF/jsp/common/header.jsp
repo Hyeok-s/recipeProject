@@ -7,13 +7,12 @@
 	rel="stylesheet">
 
 <style>
-/* 전체 헤더 컨테이너 */
 header {
-	max-width: 1650px; /* main.jsp의 body와 동일한 너비 */
-	margin: 0 auto; /* 가운데 정렬 */
+	max-width: 1650px;
+	margin: 0 auto;
 	padding: 10px 0;
 	display: flex;
-	flex-direction: column; /* 두 개의 행을 구성 */
+	flex-direction: column;
 }
 
 .header-top {
@@ -25,7 +24,7 @@ header {
 
 .header-auth {
 	display: flex;
-	gap: 15px; /* 로그인과 회원가입 간격 */
+	gap: 15px;
 }
 
 .header-auth a {
@@ -40,7 +39,7 @@ header {
 	color: #0056b3;
 }
 
-/* 하단 로고와 메뉴 영역 */
+
 .header-bottom {
 	display: flex;
 	justify-content: space-between;
@@ -49,16 +48,16 @@ header {
 	margin-left: 240px;
 }
 
-/* 로고 영역 */
+
 .header-logo {
 	display: flex;
 	align-items: center;
 }
 
 .header-logo img {
-	width: 170px; /* 로고 크기 */
+	width: 170px;
 	height: auto;
-	margin-right: 15px; /* 로고와 텍스트 사이 여백 */
+	margin-right: 15px;
 }
 
 .header-logo h1 {
@@ -68,7 +67,7 @@ header {
 	color: #333;
 }
 
-/* 메뉴 리스트 */
+
 .header-menu {
 	display: flex;
 	gap: 20px;
@@ -93,21 +92,17 @@ header {
 </style>
 
 <header>
-	<!-- 상단 영역: 로그인/회원가입 -->
 	<div class="header-top">
 		<div class="header-auth">
 			<a href="/login">로그인</a> <a href="/signup">회원가입</a>
 		</div>
 	</div>
 
-	<!-- 하단 영역: 로고와 메뉴 -->
 	<div class="header-bottom">
-		<!-- 로고 -->
 		<div class="header-logo">
-			<img src="/resources/img/logo.png" alt="Logo">
+			<img src="/resources/img/logo.png" onclick="window.location.href='/'" alt="Logo">
 		</div>
 
-		<!-- 메뉴 -->
 		<div class="header-menu">
 			<a href="/recommend">오늘의 추천 메뉴</a> <a href="/wishlist">찜 항목</a> <a
 				href="/share">메뉴 자랑</a> <a href="/contact">문의하기</a>
