@@ -9,17 +9,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.foodRecipe.demo.dto.Recipe_Detail;
 import com.foodRecipe.demo.dto.Recipe_Ingredient;
+import com.foodRecipe.demo.dto.Recipe_Manual;
 import com.foodRecipe.demo.service.RecipeInfoService;
-import com.foodRecipe.demo.service.RecipeIngredient;
+import com.foodRecipe.demo.service.RecipeIngredientService;
+import com.foodRecipe.demo.service.RecipeManualService;
 
 @Controller
 public class RecipeViewController {
 	private RecipeInfoService recipeInforService;
-	private RecipeIngredient recipeIngredient;
+	private RecipeIngredientService recipeIngredient;
+	private RecipeManualService recipeManualService;
 	
-	public RecipeViewController(RecipeInfoService recipeInforService, RecipeIngredient recipeIngredient) {
+	public RecipeViewController(RecipeInfoService recipeInforService, RecipeIngredientService recipeIngredient, RecipeManualService recipeManualService) {
 		this.recipeInforService = recipeInforService;
 		this.recipeIngredient = recipeIngredient;
+		this.recipeManualService = recipeManualService;
 	}
     
     @GetMapping("/recipe/detail")
@@ -29,6 +33,21 @@ public class RecipeViewController {
     	model.addAttribute("details", details);
     	model.addAttribute("ingredients", ingredients);
     	return "recipe/detail";
+    }
+    
+    @GetMapping("/recipe/manual")
+    public String recipeManualForm(@RequestParam("RCP_SEQ") Integer RCP_SEQ, Model model, @RequestParam(value = "step", defaultValue = "1") int step) {
+    	List<Recipe_Manual> manuals = recipeManualService.findAllRecipeManualByRCP_SEQOrderSTEP_NO(RCP_SEQ);
+    	String RCP_NM = recipeInforService.findRCP_NMByRCP_SEQ(RCP_SEQ);
+    	int index = step-1;
+    	if (manuals != null || !manuals.isEmpty()) {
+        	int maxStep = manuals.size();
+        	Recipe_Manual manual = manuals.get(index);
+        	model.addAttribute("manual", manual);
+        	model.addAttribute("RCP_NM", RCP_NM);
+        	model.addAttribute("step", step);
+    	}
+;    	return "recipe/manual";
     }
 }
 

@@ -23,4 +23,8 @@ public class RecipeInfoService {
 	public Recipe_Detail findRecipeDetailByRCP_SEQ(Integer RCP_SEQ) {
 		return recipeInfoDao.findRecipeDetailByRCP_SEQ(RCP_SEQ);
 	}
+
+	public String findRCP_NMByRCP_SEQ(Integer RCP_SEQ) {
+		return recipeInfoDao.findRCP_NMByRCP_SEQ(RCP_SEQ);
+	}
 }

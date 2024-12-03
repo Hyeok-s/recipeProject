@@ -8,10 +8,10 @@ import com.foodRecipe.demo.dao.Recipe_IngredientDao;
 import com.foodRecipe.demo.dto.Recipe_Ingredient;
 
 @Service
-public class RecipeIngredient {
+public class RecipeIngredientService {
 	private Recipe_IngredientDao recipeIngredientDao;
 	
-	public RecipeIngredient(Recipe_IngredientDao recipeIngredientDao) {
+	public RecipeIngredientService(Recipe_IngredientDao recipeIngredientDao) {
 		this.recipeIngredientDao = recipeIngredientDao;
 	}
 
