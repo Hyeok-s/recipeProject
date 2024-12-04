@@ -43,6 +43,13 @@ public class RecipeViewController {
     	if (manuals != null || !manuals.isEmpty()) {
         	int maxStep = manuals.size();
         	Recipe_Manual manual = manuals.get(index);
+        	String manual_text = manual.getMANUAL_TEXT();
+        	
+        	 if (manual_text.matches("^\\d+\\.\\s.*")) {
+                 manual_text = manual_text.substring(manual_text.indexOf(' ') + 1);
+             }
+        	manual_text = manual_text.replaceAll("[a-zA-Z]", "");
+        	manual.setMANUAL_TEXT(manual_text);
         	model.addAttribute("manual", manual);
         	model.addAttribute("RCP_NM", RCP_NM);
         	model.addAttribute("step", step);

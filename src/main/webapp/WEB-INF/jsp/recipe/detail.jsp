@@ -26,7 +26,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    perspective: 1500px; /* 3D 효과를 위한 시점 설정 */
+    perspective: 1500px;
 }
 
 .book-cover {

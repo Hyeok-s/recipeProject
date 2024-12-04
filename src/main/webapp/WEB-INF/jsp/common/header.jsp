@@ -94,7 +94,8 @@ header {
 <header>
 	<div class="header-top">
 		<div class="header-auth">
-			<a href="/login">로그인</a> <a href="/signup">회원가입</a>
+			<a href="/member/loginForm">로그인</a> <a href="/member/signUpForm">회원가입</a>
+			<a href="/member/logout">로그아웃</a>
 		</div>
 	</div>
 
