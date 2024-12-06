@@ -106,7 +106,7 @@ header {
 
 		<div class="header-menu">
 			<a href="/recommend">오늘의 추천 메뉴</a> <a href="/wishlist">찜 항목</a> <a
-				href="/share">메뉴 자랑</a> <a href="/contact">문의하기</a>
+				href="/community/communityForm">메뉴 자랑</a> <a href="/contact">문의하기</a>
 		</div>
 	</div>
 </header>

@@ -24,6 +24,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/member/loginForm");
         
         registry.addInterceptor(logoutInterceptor)
-        .addPathPatterns("/member/logout");
+        .addPathPatterns("/member/logout", "/community/addComment");
     }
 }
