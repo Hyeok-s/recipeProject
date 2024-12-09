@@ -2,6 +2,7 @@ package com.foodRecipe.demo.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -53,4 +54,17 @@ public interface CommunityDao {
 	@Update("UPDATE comment SET body = #{body}, updateDate = NOW() WHERE id = #{id}")
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	void updateComment(Comment request);
+
+	@Delete("DELETE FROM comment WHERE id = #{id}")
+	void deleteCommentById(int id);
+
+	@Select("SELECT id FROM category WHERE mainCategory = #{mainCategory}")
+	int findCategoryIdByMainCategory(String mainCategory);
+
+	@Insert("""
+			INSERT INTO community(title, body, regDate, updateDate, memberId, categoryId)
+			 VALUE(#{title}, #{body}, NOW(), NOW(), #{memberId}, #{categoryId})
+			""")
+	@Options(useGeneratedKeys = true, keyProperty = "id")
+	int insertCommunity(Community newCommunity);
 }

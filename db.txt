@@ -1,11 +1,21 @@
+USE food;
+
 -- 메뉴 기본 정보 테이블
 CREATE TABLE recipe_info (
     RCP_SEQ INT UNSIGNED PRIMARY KEY,
     RCP_NM VARCHAR(255) NOT NULL,
     RCP_WAY2 VARCHAR(100),
     RCP_PAT2 VARCHAR(100),
-    RCP_PARTS_DTLS TEXT,
     HASH_TAG TEXT
+);
+
+-- 재료 정보 테이블
+CREATE TABLE recipe_ingredient (
+    INGREDIENT_ID INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    RCP_PARTS_DTLS VARCHAR(100),
+    RCP_SEQ INT UNSIGNED,
+    FOREIGN KEY (RCP_SEQ) REFERENCES recipe_info(RCP_SEQ),
+    INDEX (RCP_SEQ)
 );
 
 -- 영양 정보 테이블
@@ -51,3 +61,150 @@ CREATE TABLE recipe_tips (
     FOREIGN KEY (RCP_SEQ) REFERENCES recipe_info(RCP_SEQ),
     INDEX (RCP_SEQ)
 );
+
+-- 유저 정보 테이블
+CREATE TABLE `member` (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(50) UNIQUE,
+    pw VARCHAR(200),
+    `name` VARCHAR(10),
+    phoneNumber VARCHAR(12),
+    bir INT UNSIGNED,
+    nickName VARCHAR(10) UNIQUE,
+    regDate DATETIME,
+    updateDate DATETIME
+);
+
+CREATE TABLE `community`(
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(50),
+    `body` TEXT,
+    regDate DATETIME,
+    updateDate DATETIME,
+    `count` INT DEFAULT 0,
+    memberId INT UNSIGNED,
+    categoryId INT UNSIGNED,
+    FOREIGN KEY (categoryId) REFERENCES `category`(id),
+    FOREIGN KEY (memberId) REFERENCES `member`(id)
+    );
+    
+CREATE TABLE `category`(
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    mainCategory VARCHAR(50),
+    subCategory VARCHAR(50)
+);
+
+SELECT * FROM category;
+
+SELECT c.id, c.title, c.regDate, m.nickName FROM community c INNER JOIN `member` m WHERE c.memberId = m.id;
+
+DROP TABLE `community`
+DROP TABLE `category`
+
+INSERT INTO `community`(title, `body`, regDate, updateDate, memberId, categoryId) VALUE('test1', '1번테스트글',  NOW(), NOW(), 1, 1);
+INSERT INTO `community`(title, `body`, regDate, updateDate, memberId, categoryId) VALUE('test2', '2번테스트글',  NOW(), NOW(), 1, 2);
+INSERT INTO `community`(title, `body`, regDate, updateDate, memberId, categoryId) VALUE('test3', '3번테스트글',  NOW(), NOW(), 1, 3);
+INSERT INTO `community`(title, `body`, regDate, updateDate, memberId, categoryId) VALUE('test4', '4번테스트글',  NOW(), NOW(), 2, 4);
+INSERT INTO `community`(title, `body`, regDate, updateDate, memberId, categoryId) VALUE('test5', '5번테스트글',  NOW(), NOW(), 2, 4);
+INSERT INTO `community`(title, `body`, regDate, updateDate, memberId, categoryId) VALUE('test6', '6번테스트글',  NOW(), NOW(), 4, 5);
+
+SELECT * FROM `community`
+SELECT * FROM `member`
+
+
+INSERT INTO `category`(mainCategory, subCategory) VALUE('커뮤니티 공지','사이트 사용법');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('커뮤니티 공지','공지사항');
+
+INSERT INTO `category`(mainCategory) VALUE('자유게시판');
+
+INSERT INTO `category`(mainCategory, subCategory) VALUE('레시피 공유','한식 레시피');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('레시피 공유','양식 레시피');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('레시피 공유','중식 레시피');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('레시피 공유','디저트 레시피');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('레시피 공유','다이어트 요리');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('레시피 공유','음료/칵테일 레시피');
+
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 질문 & 답변','조리 기법');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 질문 & 답변','요리 시간 단축 팁');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 질문 & 답변','실패한 요리 조언 요청');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 질문 & 답변','기타 자유 질문 & 답변');
+
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 대회','대회 공지');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 대회','대회 참가 후기');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 대회', '대회 수상작 공유');
+
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 팁', '식재료 보관법');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 팁', '칼질 노하우');
+INSERT INTO `category`(mainCategory, subCategory) VALUE('요리 팁', '기타 팁');
+
+INSERT INTO `member`(email, pw, `name`, phoneNumber, bir, nickName, regDate, updateDate) VALUE('aa', '1234', '관리자', '01032288650', 20010217, '상혁', NOW(), NOW())
+INSERT INTO `member`(email, pw, `name`, phoneNumber, bir, nickName, regDate, updateDate) VALUE('jinsang0021@naver.com', '1234', '관리자', '01032288650', 20010217, 'test1', NOW(), NOW())
+
+USE food
+SHOW TABLES
+
+
+SELECT * FROM recipe_info;
+SELECT * FROM recipe_nutrition;
+SELECT * FROM recipe_image;
+SELECT * FROM recipe_manual ORDER BY RCP_SEQ;
+SELECT * FROM recipe_tips;
+SELECT * FROM `member`;
+
+SELECT * FROM recipe_info;
+SELECT * FROM recipe_nutrition ORDER BY RCP_SEQ;
+
+SELECT COUNT(*) FROM recipe_info;
+SELECT COUNT(*) FROM recipe_nutrition;
+
+SELECT ATT_FILE_NO_MAIN FROM Recipe_Image
+SELECT * FROM recipe_info WHERE RCP_SEQ=3579
+
+
+SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, image.ATT_FILE_NO_MAIN FROM Recipe_Info info INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ
+
+SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, info.RCP_PARTS_DTLS, image.ATT_FILE_NO_MAIN, image.ATT_FILE_NO_MK, nutrition.INFO_WGT, nutrition.INFO_ENG, nutrition.INFO_CAR, nutrition.INFO_PRO, nutrition.INFO_FAT, nutrition.INFO_NA, tips.RCP_NA_TIP FROM Recipe_Info info INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ INNER JOIN recipe_nutrition nutrition ON info.RCP_SEQ = nutrition.RCP_SEQ INNER JOIN recipe_tips tips ON info.RCP_SEQ = tips.RCP_SEQ WHERE info.RCP_SEQ=28
+
+
+SELECT COUNT(*) FROM Recipe_Info info
+
+SELECT * FROM recipe_manual WHERE RCP_SEQ = 28 ORDER BY STEP_NO
+
+-- drop table recipe_tips;
+-- DROP TABLE recipe_nutrition;
+-- DROP TABLE recipe_image;
+-- DROP TABLE recipe_manual;
+-- DROP TABLE recipe_ingredient;
+-- DROP TABLE recipe_info;
+
+SHOW TABLES
+
+SELECT * FROM recipe_manual
+SELECT * FROM `member`;
+
+SELECT * FROM recipe_manual
+INTO OUTFILE 'a.csv'
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n';
+
+SELECT * FROM community ORDER BY regDate DESC
+SELECT * FROM category
+
+SELECT  IF(COUNT(*) = 1, 1, 0) FROM    `member` WHERE email = 'aa';
+  
+  
+SELECT * FROM MEMBER WHERE email='aa' AND pw='1234'
+
+  SELECT 
+    mainCategory,
+    subCategory,
+    id
+FROM 
+    category
+ORDER BY 
+    mainCategory, subCategory;
+    
+    SELECT id FROM category WHERE mainCategory = '자유게시판';
+    
+    
+DELETE FROM `comment` WJRE id = 2;

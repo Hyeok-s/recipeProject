@@ -62,4 +62,20 @@ public class CommunityService {
 		
 	}
 
+	public boolean deleteCommentById(int id) {
+		if(communityDao.findCommentById(id) == null) {
+			return false;
+		}
+		communityDao.deleteCommentById(id);
+		return true;
+	}
+
+	public int findCategoryIdByMainCategory(String mainCategory) {
+		return communityDao.findCategoryIdByMainCategory(mainCategory);
+	}
+
+	public void insertCommunity(Community newCommunity) {
+		communityDao.insertCommunity(newCommunity);
+	}
+
 }

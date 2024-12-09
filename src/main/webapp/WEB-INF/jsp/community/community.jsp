@@ -309,7 +309,7 @@
 
 			<div class="search-container">
 				<input type="text" class="search-input" placeholder="검색어를 입력하세요">
-				<a href="/community/new" class="new-post-btn">글쓰기</a>
+				<a href="/community/writeForm" class="new-post-btn">글쓰기</a>
 			</div>
 
 			<table class="board-table">

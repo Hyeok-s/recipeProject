@@ -140,11 +140,21 @@
 .comment-item {
 	border-bottom: 1px solid #ccc;
 	padding: 15px 0;
+	 display: flex;
+	flex-direction: column;  /* 세로로 정렬 */
+    align-items: flex-start;  /* 기본 왼쪽 정렬 */
+}
+
+.comment-actions {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
 }
 
 .comment-meta {
 	font-size: 0.9rem;
 	color: #666;
+	width: 100%;
 }
 
 .comment-form {
@@ -206,6 +216,13 @@
 	.comment-input {
 		height: 80px;
 	}
+	.comment-actions a {
+		font-size: 0.8rem;
+		padding: 4px 8px;
+	}
+	.comment-edit-input {
+		font-size: 0.9rem;
+	}
 }
 .comment-edit-input {
 	resize: none;
@@ -215,6 +232,53 @@
 	margin-bottom: 10px;
 	margin-bottom: 0;
 	flex-grow: 1;
+	width: 84%;
+}
+
+/* 댓글 버튼 스타일 */
+.comment-actions a {
+	padding: 5px 5px;
+	text-decoration: none;
+	border-radius: 5px;
+	font-size: 0.9rem;
+	color: #5a5252;
+	transition: background-color 0.3s, transform 0.2s;
+	font-family: "Gothic A1", sans-serif;
+	font-weight: bold;
+}
+
+
+.comment-actions .save-comment {
+	background-color: #28a745; /* 초록색 */
+	margin-top: 10px;
+}
+
+.comment-top{
+	display: flex;
+	width: 100%;
+}
+.save-comment{
+	padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    background-color: #007bff;
+}
+.post-actions{
+	float: right;
+}
+.post-actions a{
+	padding: 5px 5px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #5a5252;
+    transition: background-color 0.3s, transform 0.2s;
+    font-family: "Gothic A1", sans-serif;
+    font-weight: bold;
 }
 </style>
 </head>
@@ -263,9 +327,26 @@
 						<span class="date"> 작성일: <span class="relative-time"
 							data-regdate="${cmu.regDate}">${cmu.regDate}</span>
 						</span> <span class="views">조회수: ${cmu.count}</span>
+						<c:if test="${cmu.memberId == memberId}">
+					        <div class="post-actions">
+					            <a href="/community/editCommunity?id=${cmu.id}" class="edit-community">수정</a>
+					            <a href="/community/delete?id=${cmu.id}" class="delete-community">삭제</a>
+					        </div>
+					    </c:if>
 					</div>
 					<div class="divider"></div>
-					<div class="post-body">${cmu.body}</div>
+					<div class="post-body">
+					    <c:forEach var="content" items="${contentList}">
+					        <c:choose>
+					            <c:when test="${content['type'] == 'text'}">
+					                <p>${content['value']}</p>
+					            </c:when>
+					            <c:when test="${content['type'] == 'image'}">
+					                <img src="${content['value']}" alt="Community Image">
+					            </c:when>
+					        </c:choose>
+					    </c:forEach>
+					</div>
 				</div>
 
 				<!-- 댓글 섹션 -->
@@ -275,17 +356,19 @@
 						<!-- 서버에서 전달받은 댓글 데이터 렌더링 -->
 						<c:forEach var="comment" items="${comments}">
 							<li class="comment-item" id="comment-${comment.id}">
-								<div class="comment-meta">
-									<span class="comment-author">작성자: ${comment.nickName}</span> <span
-										class="comment-date" data-regdate="${comment.updateDate}">작성일:
-										${comment.updateDate}</span>
-								</div>
-								 <c:if test="${memberId == comment.memberId}">
-									<div class="comment-actions">
-										<a href="#" class="edit-comment" data-id="${comment.id}">수정</a>
-										| <a href="#" class="delete-comment" data-id="${comment.id}">삭제</a>
+								<div class = "comment-top">
+									<div class="comment-meta">
+										<span class="comment-author">작성자: ${comment.nickName}</span> <span
+											class="comment-date" data-regdate="${comment.updateDate}">작성일:
+											${comment.updateDate}</span>
 									</div>
-								</c:if>
+									 <c:if test="${memberId == comment.memberId}">
+										<div class="comment-actions">
+											<a href="#" class="edit-comment" data-id="${comment.id}">수정</a>
+											| <a href="#" class="delete-comment" data-id="${comment.id}">삭제</a>
+										</div>
+									</c:if>
+								</div>
 								<div class="comment-body">${comment.body}</div>
 							</li>
 						</c:forEach>
@@ -311,14 +394,41 @@
 	    const commentInput = document.getElementById("comment-input");
 	    const submitButton = document.getElementById("submit-comment");
 	    const commentList = document.getElementById("comment-list");
-	    const memberId = ${memberId};
+		const memberId = ${memberId};
 	    let isLoggedIn = false;
+	    
+	    //로그인 확인
+	    const checkLogin = async () => {
+	        try {
+	            const response = await fetch("/community/checkLogin");
+	            if (!response.ok) throw new Error("로그인 상태 확인 실패");
+	            const data = await response.json();
+	            isLoggedIn = data.loggedIn;
+	            return isLoggedIn;
+	        } catch (error) {
+	            console.error("로그인 확인 오류:", error);
+	            alert("로그인 상태 확인 중 오류가 발생했습니다.");
+	            return false;
+	        }
+	    };
+	    
+	 // 댓글창 클릭 시 로그인 확인
+	    commentInput.addEventListener("focus", async () => {
+	        const loggedIn = await checkLogin();
+	        if (!loggedIn) {
+	            alert("로그인이 필요한 기능입니다. 로그인 후 이용해주세요.");
+	            commentInput.blur();
+	        }
+	    });
 
 	    // 댓글 추가 함수
 	    const addCommentToDOM = (comment) => {
 	        const newComment = document.createElement("li");
 	        newComment.classList.add("comment-item");
 	        newComment.id = `comment-\${comment.id}`;
+	        
+	        const topDiv = document.createElement("div");
+	        topDiv.classList.add("comment-top");
 
 	        const metaDiv = document.createElement("div");
 	        metaDiv.classList.add("comment-meta");
@@ -328,19 +438,21 @@
 	        bodyDiv.classList.add("comment-body");
 	        bodyDiv.textContent = comment.body;
 
-	        newComment.appendChild(metaDiv);
+	        topDiv.appendChild(metaDiv);
 
 	        if (memberId === comment.memberId) {
-	        	console.log("Comment ID:", comment.id);
 	            const actionsDiv = document.createElement("div");
 	            actionsDiv.classList.add("comment-actions");
 	            actionsDiv.innerHTML = `
 	                <a href="#" class="edit-comment" data-id="\${comment.id}">수정</a> |
 	                <a href="#" class="delete-comment" data-id="\${comment.id}">삭제</a>
 	            `;
-	            newComment.appendChild(actionsDiv);
+	            topDiv.appendChild(actionsDiv);
 	        }
 
+
+	        newComment.appendChild(topDiv);
+	        
 	        newComment.appendChild(bodyDiv);
 	        commentList.prepend(newComment);
 	    };
@@ -388,14 +500,10 @@
 	        const target = event.target;
 	        
 	        const commentId = target.dataset.id;
-	        if (!commentId) {
-	        	console.log(target);
-	            console.error("Comment ID is missing!");
-	            return;
-	        }
 	        
 	        if (target.classList.contains("edit-comment")) {
 	            const commentId = target.dataset.id;
+	            if (!commentId) return;
 	            const commentItem = document.getElementById(`comment-\${commentId}`);
 	            const commentBody = commentItem.querySelector(".comment-body");
 	            const originalContent = commentBody.textContent.trim();
@@ -404,13 +512,20 @@
 	            const editInput = document.createElement("textarea");
 	            editInput.classList.add("comment-edit-input");
 	            editInput.value = originalContent;
-	            commentBody.replaceWith(editInput);
 
 	            // 저장 버튼 추가
-	            const saveButton = document.createElement("button");
-	            saveButton.textContent = "저장";
-	            saveButton.classList.add("save-comment");
-	            target.replaceWith(saveButton);
+				const saveButton = document.createElement("button");
+		        saveButton.classList.add("save-comment");
+		        saveButton.textContent = "저장";
+		        
+		        const actionsDiv = document.createElement("div");
+		        actionsDiv.style.display = "flex";
+		        actionsDiv.style.width = "100%";
+
+		        actionsDiv.appendChild(editInput);
+		        actionsDiv.appendChild(saveButton);
+		        
+		        commentBody.replaceWith(actionsDiv);
 
 	            saveButton.addEventListener("click", function () {
 	                const updatedContent = editInput.value.trim();
@@ -435,7 +550,7 @@
 	                        updatedBody.classList.add("comment-body");
 	                        updatedBody.textContent = data.body;
 	                        editInput.replaceWith(updatedBody);
-	                        saveButton.replaceWith(target);
+	                        actionsDiv.removeChild(saveButton);
 	                    })
 	                    .catch((error) => {
 	                        console.error("댓글 수정 오류:", error);
@@ -447,7 +562,7 @@
 	        // 댓글 삭제
 	        if (target.classList.contains("delete-comment")) {
 	            const commentId = target.dataset.id;
-
+	            if (!commentId) return;
 	            if (confirm("댓글을 삭제하시겠습니까?")) {
 	                fetch(`/community/deleteComment`, {
 	                    method: "POST",
@@ -460,10 +575,15 @@
 	                        }
 	                        return response.json();
 	                    })
-	                    .then(() => {
-	                        const commentItem = document.getElementById(`comment-${commentId}`);
-	                        commentItem.remove();
-	                    })
+	                    .then((data) => {
+			                if (data.success) {
+			                    const commentItem = document.getElementById(`comment-\${commentId}`);
+			                    commentItem.remove();
+			                    alert(data.message); 
+			                } else {
+			                    alert(data.message);
+			                }
+			            })
 	                    .catch((error) => {
 	                        console.error("댓글 삭제 오류:", error);
 	                        alert("댓글 삭제 중 오류가 발생했습니다.");
