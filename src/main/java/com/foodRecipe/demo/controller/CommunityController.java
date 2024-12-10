@@ -11,12 +11,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foodRecipe.demo.dto.Category;
 import com.foodRecipe.demo.dto.Comment;
 import com.foodRecipe.demo.dto.Community;
+import com.foodRecipe.demo.dto.LikeDislike;
 import com.foodRecipe.demo.service.CommunityService;
 import com.foodRecipe.demo.util.Util;
 
@@ -52,7 +55,6 @@ public class CommunityController {
 			@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
 		Map<String, List<Category>> categories = communityService.findAllCategory();
 		model.addAttribute("categories", categories);
-		
 		List<Community> cmuLists = new ArrayList<>();
 		
 		if(categoryId == 0) {
@@ -92,7 +94,26 @@ public class CommunityController {
 		if(session.getAttribute("memberId") != null) {
 			memberId = (int) session.getAttribute("memberId");
 		}
+		LikeDislike countLikesDislikes = communityService.findAllLikesDislikesByCommunityId(communityId);
+		if(countLikesDislikes == null) {
+			LikeDislike countNullLikesDislikes = new LikeDislike();
+			countNullLikesDislikes.setLikeCount(0);
+			countNullLikesDislikes.setDislikeCount(0);
+			model.addAttribute("countLikesDislikes", countNullLikesDislikes);
+		}
+		else {
+			model.addAttribute("countLikesDislikes", countLikesDislikes);
+		}
 		model.addAttribute("memberId" , memberId);
+		
+		boolean isLiked = false;
+	    boolean isDisliked = false;
+		if(memberId != -1) {
+			isLiked = communityService.isLikedByUser(communityId, memberId);
+	        isDisliked = communityService.isDislikedByUser(communityId, memberId);
+		}
+		model.addAttribute("isLiked", isLiked);
+	    model.addAttribute("isDisliked", isDisliked);
 		return "community/detail";
 	}
 	
@@ -237,9 +258,95 @@ public class CommunityController {
 	 
 	 @GetMapping("/community/editCommunity")
 	 public String getMethodName(@RequestParam("id") int communityId) {
-		 
 	 	return new String();
 	 }
 	 
-	
+	 
+	 @GetMapping("/community/delete")
+	 @ResponseBody
+	 @Transactional
+	 public String deleteCommunity(@RequestParam("id") int communityId) {
+		Community community = communityService.findCommunityById(communityId);
+		String bodyContent = community.getBody();
+		
+		List<Map<String, String>> contentList = Util.parseContent(bodyContent);
+	    for (Map<String, String> content : contentList) {
+	        if ("image".equals(content.get("type"))) {
+	            String imageUrl = content.get("value");
+	            Util.deleteImageFile(imageUrl, uploadDir);
+	        }
+	    }
+		communityService.deleteCommentByCommunityId(communityId);
+		communityService.deleteCommunityById(communityId);
+		return Util.jsReturn("정상적으로 삭제되었습니다.", "/community/communityForm");
+	 }
+	 
+	 @GetMapping("/community/editForm")
+	 public String editForm(@RequestParam("id") int communityId, Model model) throws JsonProcessingException {
+		 Map<String, List<Category>> categories = communityService.findAllCategory();	 
+		 model.addAttribute("categories", categories);
+		 ObjectMapper objectMapper = new ObjectMapper();
+		 String categoriesJson = objectMapper.writeValueAsString(categories);
+		 model.addAttribute("categoriesJson", categoriesJson);
+		 Community community = communityService.findCommunityById(communityId);
+		 model.addAttribute("community", community);
+		 Category category = communityService.findCategoryById(community.getCategoryId());
+		 model.addAttribute("category", category);
+		 List<Map<String, String>> contentList = Util.parseContent(community.getBody());
+		 model.addAttribute("contentList", contentList);
+		return "community/edit";
+	 }
+	 
+	 @PostMapping("/community/edit")
+	 @ResponseBody
+	 public String update(@RequestParam("id") int id, @RequestParam("title") String title,
+             @RequestParam("mainCategory") String mainCategory,
+             @RequestParam(value = "subCategory", required = false) String subCategory,
+             @RequestParam("body") String body, HttpSession session) {
+		 int categoryId = Integer.parseInt(subCategory);
+		 int memberId = (int) session.getAttribute("memberId");
+		 if(subCategory == null || subCategory.equals("")) {
+			 categoryId = communityService.findCategoryIdByMainCategory(mainCategory);
+	 	}
+		 
+		Community newCommunity = new Community();
+		newCommunity.setId(id);
+		newCommunity.setTitle(title);
+		newCommunity.setBody(body);
+		newCommunity.setCategoryId(categoryId);
+		communityService.updateCommunity(newCommunity);
+		
+	 	return Util.jsReturn("수정이 완료되었습니다.", "/community/detail?id=" + id);
+	 } 
+	 
+	 @PostMapping("/community/toggleLikeDislike")
+	    public ResponseEntity<Map<String, Object>> toggleLikeDislike(@RequestBody LikeDislike request, HttpSession session) {
+	        Map<String, Object> response = new HashMap<>();
+	        try {
+	        	request.setMemberId((int) session.getAttribute("memberId"));
+	            String result = communityService.toggleLikeDislike(request);
+	            LikeDislike countLikesDislikes = communityService.findAllLikesDislikesByCommunityId(request.getCommunityId());
+	    		if(countLikesDislikes == null) {
+	    			response.put("likeCount", 0);
+	    			response.put("dislikeCount", 0);
+	    		}
+	    		else {
+	    			response.put("likeCount", countLikesDislikes.getLikeCount());
+	    			response.put("dislikeCount", countLikesDislikes.getDislikeCount());
+	    		}
+
+	    		boolean	isLiked = communityService.isLikedByUser(request.getCommunityId(), request.getMemberId());
+	    	    boolean isDisliked = communityService.isDislikedByUser(request.getCommunityId(), request.getMemberId());
+
+	            response.put("isLiked", isLiked);
+	            response.put("isDisliked", isDisliked);
+	            response.put("success", true);
+	            return ResponseEntity.ok(response);
+	        } catch (Exception e) {
+	            response.put("success", false);
+	            response.put("message", "처리 중 오류가 발생했습니다.");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	        }
+	    }
+
 }

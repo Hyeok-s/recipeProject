@@ -173,7 +173,7 @@
 				</div>
 				<div class="form-group">
 				    <label for="subCategorySelect">서브 카테고리</label>
-				    <select id="subCategorySelect" class="input-title" name="subCategory" disabled>
+				    <select id="subCategorySelect" class="input-title" name="subCategory" disabled required>
 				        <option value="" selected>서브 카테고리를 선택하세요</option>
 				    </select>
 				</div>

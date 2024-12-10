@@ -11,6 +11,7 @@ import com.foodRecipe.demo.dao.CommunityDao;
 import com.foodRecipe.demo.dto.Category;
 import com.foodRecipe.demo.dto.Comment;
 import com.foodRecipe.demo.dto.Community;
+import com.foodRecipe.demo.dto.LikeDislike;
 
 @Service
 public class CommunityService {
@@ -77,5 +78,53 @@ public class CommunityService {
 	public void insertCommunity(Community newCommunity) {
 		communityDao.insertCommunity(newCommunity);
 	}
+
+	public void deleteCommunityById(int id) {
+		communityDao.deleteCommunityById(id);
+	}
+
+	public void deleteCommentByCommunityId(int communityId) {
+		communityDao.deleteCommentByCommunityId(communityId);
+	}
+
+	public Category findCategoryById(int id) {
+		return communityDao.findCategoryById(id);
+	}
+
+	public String toggleLikeDislike(LikeDislike request) {
+		LikeDislike existing = communityDao.findByLikeDislikeByMemberIdAndCommunityId(request.getMemberId(), request.getCommunityId());
+        if (existing != null) {
+            // 동일한 상태라면 삭제
+            if (existing.isLikeStatus() == request.isLikeStatus()) {
+            	communityDao.deleteLikeDislike(existing.getId());
+                return request.isLikeStatus() ? "좋아요가 취소되었습니다." : "싫어요가 취소되었습니다.";
+            } else {
+                // 상태가 다르면 업데이트
+                existing.setLikeStatus(request.isLikeStatus());
+                communityDao.updateLikeDislike(existing);
+                return request.isLikeStatus() ? "싫어요가 좋아요로 변경되었습니다." : "좋아요가 싫어요로 변경되었습니다.";
+            }
+        } else {
+        	communityDao.createLikeDislike(request);
+            return request.isLikeStatus() ? "좋아요가 등록되었습니다." : "싫어요가 등록되었습니다.";
+        }
+	}
+	
+	public LikeDislike findAllLikesDislikesByCommunityId(int communityId) {
+		return communityDao.findAllLikesDislikesByCommunityId(communityId);
+	}
+
+	public boolean isLikedByUser(int communityId, int memberId) {
+		return communityDao.isLikedByUser(communityId, memberId);
+	}
+
+	public boolean isDislikedByUser(int communityId, int memberId) {
+		return communityDao.isDislikedByUser(communityId, memberId);
+	}
+
+	public void updateCommunity(Community community) {
+		communityDao.updateCommunity(community);
+	}
+
 
 }

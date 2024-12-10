@@ -281,6 +281,7 @@
     font-weight: bold;
 }
 </style>
+<script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/common/header.jsp"%>
@@ -329,8 +330,8 @@
 						</span> <span class="views">조회수: ${cmu.count}</span>
 						<c:if test="${cmu.memberId == memberId}">
 					        <div class="post-actions">
-					            <a href="/community/editCommunity?id=${cmu.id}" class="edit-community">수정</a>
-					            <a href="/community/delete?id=${cmu.id}" class="delete-community">삭제</a>
+					            <a href="/community/editForm?id=${cmu.id}" class="edit-community">수정</a>
+					            <a href="#" class="delete-community" onclick="confirmDelete('${cmu.id}')">삭제</a>
 					        </div>
 					    </c:if>
 					</div>
@@ -346,6 +347,31 @@
 					            </c:when>
 					        </c:choose>
 					    </c:forEach>
+					<div class="like-dislike-section">
+					    <button class="like-btn" id="like-btn">
+					        <c:choose>
+					            <c:when test="${isLiked}">
+					                <i class="fa-solid fa-thumbs-up"></i>
+					            </c:when>
+					            <c:otherwise>
+					                <i class="fa-regular fa-thumbs-up"></i>
+					            </c:otherwise>
+					        </c:choose>
+					        (<span id="like-count">${countLikesDislikes.likeCount}</span>)
+					    </button>
+					
+					    <button class="dislike-btn" id="dislike-btn">
+					        <c:choose>
+					            <c:when test="${isDisliked}">
+					                <i class="fa-solid fa-thumbs-down"></i>
+					            </c:when>
+					            <c:otherwise>
+					                <i class="fa-regular fa-thumbs-down"></i>
+					            </c:otherwise>
+					        </c:choose>
+					        (<span id="dislike-count">${countLikesDislikes.dislikeCount}</span>)
+					    </button>
+					</div>
 					</div>
 				</div>
 
@@ -396,6 +422,11 @@
 	    const commentList = document.getElementById("comment-list");
 		const memberId = ${memberId};
 	    let isLoggedIn = false;
+	    
+	    const likeButton = document.getElementById("like-btn");
+        const dislikeButton = document.getElementById("dislike-btn");
+        const likeCount = document.getElementById("like-count");
+        const dislikeCount = document.getElementById("dislike-count");
 	    
 	    //로그인 확인
 	    const checkLogin = async () => {
@@ -589,9 +620,110 @@
 	                        alert("댓글 삭제 중 오류가 발생했습니다.");
 	                    });
 	            }
+	            
 	        }
+	       
 	    });
-	});
+		 // 좋아요 버튼 클릭 이벤트
+	        likeButton.addEventListener("click", function () {
+	            fetch('/community/toggleLikeDislike', {
+	                method: 'POST',
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                },
+	                body: JSON.stringify({
+	                    communityId: ${cmu.id},
+	                    likeStatus: true,
+	                }),
+	            })
+	                .then((response) => response.json())
+	                .then((data) => {
+	                    if (data.success) {
+	                    	dislikeCount.textContent = data.dislikeCount;
+	                    	likeCount.textContent = data.likeCount;
+	                    	
+	                    	const likeIcon = likeButton.querySelector("i");
+	                        if (data.isLiked) {
+	                        	likeIcon.classList.remove("fa-regular");
+	                        	likeIcon.classList.add("fa-solid");
+	                        } else {
+	                        	likeIcon.classList.remove("fa-solid");
+	                        	likeIcon.classList.add("fa-regular");
+	                        }
+	                        
+	                    	const dislikeIcon = dislikeButton.querySelector("i");
+	                        if (data.isDisliked) {
+	                        	dislikeIcon.classList.remove("fa-regular");
+	                        	dislikeIcon.classList.add("fa-solid");
+	                        } else {
+	                        	dislikeIcon.classList.remove("fa-solid");
+	                        	dislikeIcon.classList.add("fa-regular");
+	                        }
+	                        
+	                    } else {
+	                        alert('좋아요 처리 중 오류가 발생했습니다.');
+	                    }
+	                })
+	                .catch((error) => {
+	                    console.error('좋아요 오류:', error);
+	                    alert('좋아요 처리 중 오류가 발생했습니다.');
+	                });
+	        });
+	
+	        // 싫어요 버튼 클릭 이벤트
+	        dislikeButton.addEventListener("click", function () {
+	            fetch('/community/toggleLikeDislike', {
+	                method: 'POST',
+	                headers: {
+	                    'Content-Type': 'application/json',
+	                },
+	                body: JSON.stringify({
+	                    communityId: ${cmu.id},
+	                    likeStatus: false,
+	                }),
+	            })
+	                .then((response) => response.json())
+	                .then((data) => {
+	                    if (data.success) {
+	                    	dislikeCount.textContent = data.dislikeCount;
+	                    	likeCount.textContent = data.likeCount;
+	                    	
+	                    	const likeIcon = likeButton.querySelector("i");
+	                        if (data.isLiked) {
+	                        	likeIcon.classList.remove("fa-regular");
+	                        	likeIcon.classList.add("fa-solid");
+	                        } else {
+	                        	likeIcon.classList.remove("fa-solid");
+	                        	likeIcon.classList.add("fa-regular");
+	                        }
+	                    	
+	                    	const dislikeicon = dislikeButton.querySelector("i");
+	                        if (data.isDisliked) {
+	                        	dislikeicon.classList.remove("fa-regular");
+	                        	dislikeicon.classList.add("fa-solid");
+	                        } else {
+	                        	dislikeicon.classList.remove("fa-solid");
+	                        	dislikeicon.classList.add("fa-regular");
+	                        }
+	                        
+	                    } else {
+	                        alert('싫어요 처리 중 오류가 발생했습니다.');
+	                    }
+	                })
+	                .catch((error) => {
+	                    console.error('싫어요 오류:', error);
+	                    alert('싫어요 처리 중 오류가 발생했습니다.');
+	                });
+	        });
+	    });
+	
+	
+    function confirmDelete(id) {
+        if (confirm('게시물을 삭제하시겠습니까?')) {
+            // 확인을 눌렀을 경우 삭제 URL로 이동
+            window.location.href = '/community/delete?id=' + id;
+        }
+    }
 </script>
 </body>
 </html>

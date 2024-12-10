@@ -308,7 +308,7 @@
 				alt="Main Content Image">
 
 			<div class="search-container">
-				<input type="text" class="search-input" placeholder="검색어를 입력하세요">
+				<input type="text" id="searchInput" placeholder="검색어를 입력하세요" class="search-input" oninput="filterProducts()">
 				<a href="/community/writeForm" class="new-post-btn">글쓰기</a>
 			</div>
 
@@ -323,7 +323,7 @@
 				</thead>
 				<tbody>
 					<c:forEach var="cmuList" items="${cmuLists}">
-						<tr>
+						<tr class="board-item" data-title="${cmuList.title}">
 							<td onclick="location.href='/community/detail?id=${cmuList.id}'"><i
 								class="fa-solid fa-square"></i>${cmuList.title}</td>
 							<td>${cmuList.nickName}</td>
@@ -393,7 +393,6 @@
 			</div>
 		</div>
 
-
 	</div>
 	<script>
     // 페이지 로드 시 상대 시간 계산
@@ -426,6 +425,20 @@
             element.textContent = formatRelativeTime(regDate);
         });
     });
+    
+    function filterProducts() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const items = document.querySelectorAll('.board-item');
+        // 제품 필터링
+        	items.forEach(item => {
+                const title = item.getAttribute('data-title').toLowerCase();
+                if (title.includes(searchTerm)) {
+                    item.style.display = ''; // 검색어에 포함되면 표시
+                } else {
+                    item.style.display = 'none'; // 포함되지 않으면 숨김
+                }
+            });
+        }
 </script>
 </body>
 </html>
