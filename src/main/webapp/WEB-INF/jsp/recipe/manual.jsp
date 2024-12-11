@@ -294,7 +294,7 @@ body {
 
 			<div class="left-image">
 				<div class="ingredients">
-					<div class="ingredients-title">sfdggfds</div>
+					<div class="memo">sfdggfds</div>
 				</div>
 			</div>
 			<div class="right-page">
@@ -309,6 +309,78 @@ body {
 		</div>
 	</div>
 <script>
+if ('webkitSpeechRecognition' in window) {
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    const synth = window.speechSynthesis;
+    
+    // 음성 인식 시작
+    recognition.addEventListener('start', () => {
+        console.log("음성 인식 시작!");
+    });
+
+    // 음성 인식 결과 처리
+    recognition.addEventListener('result', (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+        console.log(`음성 인식 결과: ${transcript}`);
+        console.log(`정확도: ${event.results[0][0].confidence}`);
+
+        if (transcriptincludes('다음')) {
+            console.log("명령 인식: '다음' -> 버튼 클릭");
+            document.getElementById('nextButton').click();
+        } else {
+            console.log("알 수 없는 명령: ", transcript);
+        }
+    });
+
+    // 인식 종료 처리
+    recognition.addEventListener('end', () => {
+        console.log("음성 인식 종료, 다시 시작 중...");
+        recognition.start(); // 재시작
+    });
+
+    // 오류 처리
+    recognition.addEventListener('error', (event) => {
+        console.error("음성 인식 오류 발생!");
+        console.error("오류 코드: ", event.error);
+
+        if (event.error === 'no-speech') {
+            console.warn("음성이 감지되지 않았습니다. 다시 시도하세요.");
+        } else if (event.error === 'network') {
+            console.warn("네트워크 연결 문제. 연결 상태를 확인하세요.");
+        } else if (event.error === 'not-allowed') {
+            console.warn("마이크 권한이 허용되지 않았습니다. 브라우저 설정을 확인하세요.");
+        }
+    });
+
+    // 페이지 로드 시 자동 시작
+    window.onload = () => {
+        recognition.start();
+        readManual();
+        console.log("음성 인식 자동 시작!");
+    };
+    
+    function readManual() {
+        const manualContent = document.querySelector('.ingredients-title');
+        if (!manualContent || !manualContent.textContent.trim()) {
+            const utterance = new SpeechSynthesisUtterance('팁이 없습니다.');
+            utterance.lang = 'ko-KR';
+            synth.speak(utterance);
+            return;
+        }
+        const utterance = new SpeechSynthesisUtterance(`메뉴얼 내용: \${manualContent.textContent}`);
+        utterance.lang = 'ko-KR';
+        synth.speak(utterance);
+    }
+    
+} else {
+    console.warn("이 브라우저는 Web Speech API를 지원하지 않습니다.");
+}
+
+
 document.getElementById('nextButton').addEventListener('click', function () {
     const bookCover = document.querySelector('.book-cover');
 

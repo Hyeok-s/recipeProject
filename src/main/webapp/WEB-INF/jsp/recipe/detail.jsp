@@ -376,6 +376,132 @@ body {
 		</div>
 	</div>
 <script>
+//기존 음성 인식 코드와 함께 추가
+if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    const synth = window.speechSynthesis;
+
+    // 재료 목록 가져오기
+    const ingredients = document.querySelectorAll('.ingredients li');
+
+    // 음성 인식 시작
+    recognition.addEventListener('start', () => {
+        console.log("음성 인식 시작!");
+    });
+
+    let isRecognitionStopped = false;
+    
+    // 음성 인식 결과 처리
+    recognition.addEventListener('result', (event) => {
+        const transcript = event.results[0][0].transcript.trim();
+        console.log(`음성 인식 결과: ${transcript}`);
+        console.log(`정확도: ${event.results[0][0].confidence}`);
+
+        if (transcript.includes('다음')) {
+            console.log("명령 인식: '다음' -> 버튼 클릭");
+            document.getElementById('nextButton').click();
+        } else if (transcriptincludes('재료')) {
+            console.log("명령 인식: '재료' -> 재료 읽기 시작");
+            readIngredients(ingredients);
+        } else if (transcriptincludes('꿀팁')) {
+            console.log("명령 인식: '팁' -> 팁 읽기 시작");
+            readTip();
+        } else if (transcriptincludes('도움말')) {
+            console.log("명령 인식: '도움말' -> 도움말 읽기 시작");
+            readHelp();
+        } else if (transcriptincludes('그만')) {
+            console.log("명령 인식: '그만' -> 음성 출력 중단");
+            synth.cancel();
+        } else if (transcriptincludes('마이크 끄기')) {
+            console.log("명령 인식: '마이크 끄기' -> 음성 인식 중지");
+            recognition.stop();
+            isRecognitionStopped = true;
+        } else {
+            console.log("알 수 없는 명령: ", transcript);
+        }
+        
+        setTimeout(() => { isProcessingCommand = false; }, 1000);
+    });
+
+    // 인식 종료 처리
+    recognition.addEventListener('end', () => {
+    	if (!isRecognitionStopped) {
+            console.log("음성 인식 종료, 다시 시작 중...");
+            recognition.start(); // 재시작
+        } else {
+            console.log("음성 인식이 멈췄습니다.");
+        }
+    });
+
+    // 오류 처리
+    recognition.addEventListener('error', (event) => {
+        console.error("음성 인식 오류 발생!");
+        console.error("오류 코드: ", event.error);
+
+        if (event.error === 'no-speech') {
+            console.warn("음성이 감지되지 않았습니다. 다시 시도하세요.");
+        } else if (event.error === 'network') {
+            console.warn("네트워크 연결 문제. 연결 상태를 확인하세요.");
+        } else if (event.error === 'not-allowed') {
+            console.warn("마이크 권한이 허용되지 않았습니다. 브라우저 설정을 확인하세요.");
+        }
+    });
+
+    // 페이지 로드 시 자동 시작
+    window.onload = () => {
+        recognition.start();
+        console.log("음성 인식 자동 시작!");
+    };
+
+    // 재료 목록 읽기 함수
+    function readIngredients(ingredients) {
+        if (ingredients.length === 0) {
+            const utterance = new SpeechSynthesisUtterance('재료 목록이 비어 있습니다.');
+            utterance.lang = 'ko-KR';
+            synth.speak(utterance);
+            return;
+        }
+
+        ingredients.forEach((ingredient, index) => {
+            const utterance = new SpeechSynthesisUtterance();
+            utterance.lang = 'ko-KR';
+            utterance.text = `\${index + 1}번 재료, \${ingredient.textContent}`;
+            console.log(`재료 음성: \${utterance.text}`);
+            speechSynthesis.speak(utterance);
+        });
+        const endMessage = new SpeechSynthesisUtterance('이상 재료 끝');
+        endMessage.lang = 'ko-KR';
+        speechSynthesis.speak(endMessage);
+    }
+    
+    function readTip() {
+        const tipContent = document.querySelector('.tip-content');
+        if (!tipContent || !tipContent.textContent.trim()) {
+            const utterance = new SpeechSynthesisUtterance('팁이 없습니다.');
+            utterance.lang = 'ko-KR';
+            synth.speak(utterance);
+            return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(`팁 내용: \${tipContent.textContent}`);
+        utterance.lang = 'ko-KR';
+        synth.speak(utterance);
+    }
+    
+    function readHelp() {
+        const utterance = new SpeechSynthesisUtterance(`가능한 명령어는 다음과 같습니다. '다음', '재료', '꿀팁', '그만', '도움말', '마이크끄기'.`);
+        utterance.lang = 'ko-KR';
+        synth.speak(utterance);
+    }
+} else {
+    console.warn("이 브라우저는 Web Speech API를 지원하지 않습니다.");
+}
+
+// 기존 버튼 클릭 이벤트 처리
 document.getElementById('nextButton').addEventListener('click', function () {
     const bookCover = document.querySelector('.book-cover');
     const imageElement = document.querySelector('.book-image img');
@@ -391,7 +517,6 @@ document.getElementById('nextButton').addEventListener('click', function () {
         window.location.href = '/recipe/manual?RCP_SEQ=' + ${details.RCP_SEQ};
     }, 1000); // 애니메이션 시간 (1초)
 });
-
 </script>
 </body>
 </html>
