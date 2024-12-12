@@ -93,12 +93,17 @@ header {
 
 <header>
 	<div class="header-top">
-		<div class="header-auth">
-			<a href="/member/loginForm">로그인</a> <a href="/member/signUpForm">회원가입</a>
-			<a href="/member/logout">로그아웃</a>
-		</div>
+	    <div class="header-auth">
+	            <c:if test="${empty memberId}">
+	                <a href="/member/loginForm">로그인</a>
+	                <a href="/member/signUpForm">회원가입</a>
+	            </c:if>
+	            <c:if test="${not empty memberId}">
+	                <a href="/member/logout">로그아웃</a>
+	                <a href="/member/myPage">마이페이지</a>
+	            </c:if>
+	    </div>
 	</div>
-
 	<div class="header-bottom">
 		<div class="header-logo">
 			<img src="/resources/img/logo.png" onclick="window.location.href='/'" alt="Logo">

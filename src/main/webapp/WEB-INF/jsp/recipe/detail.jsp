@@ -276,26 +276,74 @@ body {
 }
 .next-button {
     position: absolute;
-    right: -60px;
-    background-color: #dcdcdc;
+    right: -28%;
+    background-color: transparent;
     border-radius: 50%;
-    font-size: 60px;
+    font-size: 120px;
     color: #6a553e;
     z-index: 3;
     display: flex;
     justify-content: center;
     align-items: center;
     border-style: none;
-}
-.next-button .arrow {
-    display: inline-block;
+    animation: pulse 2s infinite; /* 애니메이션 추가 */
+    transition: transform 0.2s ease; /* 클릭 시 부드러운 반응 */
 }
 
-.next-button:hover .arrow {
-    color: #ff5733; /* 마우스 오버 시 색상 변경 */
+.next-button::after {
+    content: ">";
+    background: linear-gradient(90deg, transparent, #6a553e, transparent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-flicker 1.5s infinite; /* 텍스트 빈 부분 애니메이션 */
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
 }
 .fa-solid{
 	padding: 26px;
+}
+.microphone {
+    position: absolute;
+    top: 10px;
+    right: 65px;
+    font-size: 24px;
+    color: #6a553e;
+    cursor: pointer;
+    z-index: 10;
+    align-items: center;
+    display: inline-flex;
+}
+
+.dot {
+ position: absolute;
+ top: 50%;
+ left: 26%;
+ transform: translate(-50%, -50%);
+  color: #6a553e;
+  font-size: 0.4em;
+  }
+  
+.volume {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 24px;
+  color: red;
+  cursor: pointer;
+  z-index: 10;
+  align-items: center;
+  display: inline-flex;   
+}
+
+.fa-volume-xmark{
+	color: #6a553e;
 }
 </style>
 <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
@@ -321,6 +369,10 @@ body {
 			</div>
 
 			<div class="right-page">
+			<i class="fa-solid fa-microphone-slash microphone">
+  				<span class="dot">●</span>
+			</i>
+			<i class="fa-solid fa-volume-high volume"></i>
 				<div class="nutrition">
 					<div class="ingredients-title">영양 정보</div>
 					<div class="nutrition-info">
@@ -370,19 +422,46 @@ body {
 				</div>
 					<!-- 화살표 버튼 -->
 			    <button id="nextButton" class="next-button">
-					<i class="fa-solid fa-arrow-right"></i>
+					>
 			    </button>
 			</div>
 		</div>
 	</div>
 <script>
+let isRecognitionActive = ${isRecognitionActive};
+let isVolumeOn = ${isVolumeOn};
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 마이크 아이콘 처리
+    const microphoneIcon = document.querySelector(".fa-microphone-slash");
+    if (${isRecognitionActive}) {
+        microphoneIcon.classList.remove("fa-microphone-slash");
+        microphoneIcon.classList.add("fa-microphone");
+        const dot = microphoneIcon.querySelector('.dot');
+        dot.style.color = 'red'
+    } else {
+        microphoneIcon.classList.remove("fa-microphone");
+        microphoneIcon.classList.add("fa-microphone-slash");
+    }
+
+
+    // 볼륨 아이콘 처리
+    const volumeIcon = document.querySelector(".fa-volume-high");
+
+    if (${isVolumeOn}) {
+        volumeIcon.classList.remove("fa-volume-xmark");
+        volumeIcon.classList.add("fa-volume-high");
+    } else {
+        volumeIcon.classList.remove("fa-volume-high");
+        volumeIcon.classList.add("fa-volume-xmark");
+    }
+});
 //기존 음성 인식 코드와 함께 추가
 if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
     const recognition = new webkitSpeechRecognition();
     recognition.lang = 'ko-KR';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
     const synth = window.speechSynthesis;
 
     // 재료 목록 가져오기
@@ -393,7 +472,6 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
         console.log("음성 인식 시작!");
     });
 
-    let isRecognitionStopped = false;
     
     // 음성 인식 결과 처리
     recognition.addEventListener('result', (event) => {
@@ -403,33 +481,59 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
 
         if (transcript.includes('다음')) {
             console.log("명령 인식: '다음' -> 버튼 클릭");
+            synth.cancel();
             document.getElementById('nextButton').click();
-        } else if (transcriptincludes('재료')) {
+        } else if (transcript.includes('재료')) {
             console.log("명령 인식: '재료' -> 재료 읽기 시작");
+            synth.cancel();
             readIngredients(ingredients);
-        } else if (transcriptincludes('꿀팁')) {
+        } else if (transcript.includes('꿀팁')) {
             console.log("명령 인식: '팁' -> 팁 읽기 시작");
+            synth.cancel();
             readTip();
-        } else if (transcriptincludes('도움말')) {
+        } else if (transcript.includes('도움말')) {
             console.log("명령 인식: '도움말' -> 도움말 읽기 시작");
+            synth.cancel();
             readHelp();
-        } else if (transcriptincludes('그만')) {
+        } else if (transcript.includes('그만')) {
             console.log("명령 인식: '그만' -> 음성 출력 중단");
             synth.cancel();
-        } else if (transcriptincludes('마이크 끄기')) {
+        } else if (transcript.includes('마이크 끄기')) {
             console.log("명령 인식: '마이크 끄기' -> 음성 인식 중지");
             recognition.stop();
-            isRecognitionStopped = true;
-        } else {
+            document.querySelector('.microphone').click();
+        } 
+        else if (transcript.includes('소리 꺼')) {
+            console.log("명령 인식: '소리 끄기' -> 소리 중지");
+            synth.cancel();
+            document.querySelector('.volume').click();
+        }
+        else if (transcript.includes('소리 켜')) {
+            console.log("명령 인식: '소리 켜기' -> 소리 켜기");
+            synth.cancel();
+            document.querySelector('.volume').click();
+        }
+        else {
             console.log("알 수 없는 명령: ", transcript);
         }
         
         setTimeout(() => { isProcessingCommand = false; }, 1000);
     });
 
+    //윈도우 시작시 마이크, 소리 시작여부
+    window.onload = () => {
+    	synth.cancel();
+    	 if (${isRecognitionActive}) {
+    	        recognition.start();
+    	        console.log("음성 인식 자동 시작");
+    	    } else {
+    	        console.log("음성 인식 시작되지 않음");
+    	    }
+    };
+    
     // 인식 종료 처리
     recognition.addEventListener('end', () => {
-    	if (!isRecognitionStopped) {
+    	if (isRecognitionActive) {
             console.log("음성 인식 종료, 다시 시작 중...");
             recognition.start(); // 재시작
         } else {
@@ -437,6 +541,60 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
         }
     });
 
+    //음성인식 버튼 처리
+    document.querySelector('.fa-microphone-slash').addEventListener('click', function () {
+        const icon = this;
+
+        // 아이콘 변경
+        if (icon.classList.contains('fa-microphone-slash')) {
+            icon.classList.remove('fa-microphone-slash');
+            icon.classList.add('fa-microphone');
+            isRecognitionActive = true;
+            recognition.start();
+            console.log("음성 인식 시작");
+            
+        } else {
+            icon.classList.remove('fa-microphone');
+            icon.classList.add('fa-microphone-slash');
+            console.log("음성 인식 중지");
+            isRecognitionActive = false;
+            recognition.stop();
+        }
+
+        // dot 색상 변경
+        const dot = icon.querySelector('.dot');
+        if (dot) {
+            dot.style.color = icon.classList.contains('fa-microphone') ? 'red' : '#6a553e';
+        }
+    });
+    
+    
+    //볼륨인식 버튼 처리
+    document.querySelector('.fa-volume-high').addEventListener('click', function () {
+        const icon = this;
+
+        // 아이콘 변경
+        if (icon.classList.contains('fa-volume-high')) {
+            icon.classList.remove('fa-volume-high');
+            icon.classList.add('fa-volume-xmark');
+            isVolumeOn = false;
+            synth.cancel();
+            console.log("볼륨 끔");
+        } else {
+            icon.classList.remove('fa-volume-xmark');
+            icon.classList.add('fa-volume-high');
+            isVolumeOn = true;
+            console.log("볼륨 켬");
+        }
+
+        // dot 색상 변경
+        const dot = icon.querySelector('.dot');
+        if (dot) {
+            dot.style.color = icon.classList.contains('fa-microphone') ? 'red' : '#6a553e';
+        }
+    });
+    
+    
     // 오류 처리
     recognition.addEventListener('error', (event) => {
         console.error("음성 인식 오류 발생!");
@@ -451,14 +609,14 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
         }
     });
 
-    // 페이지 로드 시 자동 시작
-    window.onload = () => {
-        recognition.start();
-        console.log("음성 인식 자동 시작!");
-    };
-
     // 재료 목록 읽기 함수
     function readIngredients(ingredients) {
+    	
+    	if (!isVolumeOn) {
+            console.log("볼륨이 꺼져 있어 재료를 읽지 않습니다.");
+            return;
+        }
+    	
         if (ingredients.length === 0) {
             const utterance = new SpeechSynthesisUtterance('재료 목록이 비어 있습니다.');
             utterance.lang = 'ko-KR';
@@ -477,8 +635,12 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
         endMessage.lang = 'ko-KR';
         speechSynthesis.speak(endMessage);
     }
-    
+    //팁 읽기
     function readTip() {
+        if (!isVolumeOn) {
+            console.log("볼륨이 꺼져 있어 팁을 읽지 않습니다.");
+            return;
+        }
         const tipContent = document.querySelector('.tip-content');
         if (!tipContent || !tipContent.textContent.trim()) {
             const utterance = new SpeechSynthesisUtterance('팁이 없습니다.');
@@ -491,9 +653,13 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
         utterance.lang = 'ko-KR';
         synth.speak(utterance);
     }
-    
+    //도움말 읽기
     function readHelp() {
-        const utterance = new SpeechSynthesisUtterance(`가능한 명령어는 다음과 같습니다. '다음', '재료', '꿀팁', '그만', '도움말', '마이크끄기'.`);
+    	if (!isVolumeOn) {
+            console.log("볼륨이 꺼져 있어 도움말을 읽지 않습니다.");
+            return;
+        }
+        const utterance = new SpeechSynthesisUtterance(`가능한 명령어는 '재료', '다음', '꿀팁', '그만', '도움말', '마이크끄기'. '소리 꺼', '소리 켜' 가 있습니다.`);
         utterance.lang = 'ko-KR';
         synth.speak(utterance);
     }
@@ -514,9 +680,11 @@ document.getElementById('nextButton').addEventListener('click', function () {
 
     // 애니메이션이 끝난 후 페이지 이동
     setTimeout(() => {
-        window.location.href = '/recipe/manual?RCP_SEQ=' + ${details.RCP_SEQ};
+        window.location.href = '/recipe/manual?RCP_SEQ=' + ${details.RCP_SEQ} + '&isRecognitionActive=' + isRecognitionActive + '&isVolumeOn=' + isVolumeOn;
     }, 1000); // 애니메이션 시간 (1초)
 });
+
+
 </script>
 </body>
 </html>

@@ -27,16 +27,20 @@ public class RecipeViewController {
 	}
     
     @GetMapping("/recipe/detail")
-    public String recipeDetailForm(@RequestParam("RCP_SEQ") Integer RCP_SEQ, Model model) {
+    public String recipeDetailForm(@RequestParam("RCP_SEQ") Integer RCP_SEQ, @RequestParam(value = "isRecognitionActive", defaultValue = "false") boolean isRecognitionActive, 
+    		@RequestParam(value = "isVolumeOn", defaultValue = "true") boolean isVolumeOn, Model model) {
     	Recipe_Detail details = recipeInforService.findRecipeDetailByRCP_SEQ(RCP_SEQ);
     	List<Recipe_Ingredient> ingredients = recipeIngredient.findIngredientsByRCP_SEQ(RCP_SEQ);
     	model.addAttribute("details", details);
     	model.addAttribute("ingredients", ingredients);
+    	model.addAttribute("isRecognitionActive", isRecognitionActive);
+    	model.addAttribute("isVolumeOn", isVolumeOn);
     	return "recipe/detail";
     }
     
     @GetMapping("/recipe/manual")
-    public String recipeManualForm(@RequestParam("RCP_SEQ") Integer RCP_SEQ, Model model, @RequestParam(value = "step", defaultValue = "1") int step) {
+    public String recipeManualForm(@RequestParam("RCP_SEQ") Integer RCP_SEQ, @RequestParam("isRecognitionActive") boolean isRecognitionActive, 
+    		@RequestParam("isVolumeOn") boolean isVolumeOn, Model model, @RequestParam(value = "step", defaultValue = "1") int step) {
     	List<Recipe_Manual> manuals = recipeManualService.findAllRecipeManualByRCP_SEQOrderSTEP_NO(RCP_SEQ);
     	String RCP_NM = recipeInforService.findRCP_NMByRCP_SEQ(RCP_SEQ);
     	int index = step-1;
@@ -50,12 +54,17 @@ public class RecipeViewController {
              }
         	manual_text = manual_text.replaceAll("[a-zA-Z]", "");
         	manual.setMANUAL_TEXT(manual_text);
+        	model.addAttribute("maxStep", maxStep);
         	model.addAttribute("manual", manual);
         	model.addAttribute("RCP_NM", RCP_NM);
+        	model.addAttribute("isRecognitionActive", isRecognitionActive);
+        	model.addAttribute("isVolumeOn", isVolumeOn);
         	model.addAttribute("step", step);
     	}
-;    	return "recipe/manual";
+    	return "recipe/manual";
     }
+    
+
 }
 
 
