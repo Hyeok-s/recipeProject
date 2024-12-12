@@ -58,45 +58,94 @@
         margin: 20px auto;
     }
 
-    form {
+    .search-bar {
         display: flex;
         align-items: center;
         gap: 15px;
+        flex: 1;
+        margin-left: 320px;
     }
 
+
+
     label {
-        font-size: 14px;
+        font-size: 20px;
         color: #d26d8e;
         font-weight: bold;
     }
 
-    select, input[type="text"] {
-        padding: 8px 12px;
-        font-size: 14px;
-        border: 1px solid #ffc0cb;
+input[type="text"] {
+        padding: 12px 18px;
+        font-size: 16px;
+        border: 2px solid #ffc0cb;
         border-radius: 8px;
         background-color: #fff;
         color: #333;
+        width: 100%; /* 입력창 너비를 부모에 맞게 */
+        max-width: 500px; /* 최대 너비 설정 */
+        box-sizing: border-box; /* padding 포함된 크기 설정 */
     }
 
-    select:hover, input[type="text"]:hover {
+input[type="text"]:focus {
         border-color: #f080a9;
+        outline: none;
     }
+    
+.sort-options {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 16px;
+    margin-right: 320px;
+}
 
-    .btn-search {
-        padding: 8px 16px;
-        font-size: 14px;
-        background-color: #f080a9;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+.sort-options label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-    .btn-search:hover {
-        background-color: #d26d8e;
-    }
+.sort-options input[type="radio"] {
+    display: none; /* 기본 라디오 버튼 숨김 */
+}
+
+.sort-options label {
+    position: relative;
+    font-size: 16px;
+    padding-left: 30px; /* 체크 마크 공간 확보 */
+    cursor: pointer;
+    color: #d26d8e;
+    font-weight: bold;
+}
+
+.sort-options label::before {
+    content: ''; /* 기본 상태 */
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffc0cb; /* 테두리 색상 */
+    border-radius: 3px; /* 체크박스 형태 */
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+/* 체크된 상태 */
+.sort-options input[type="radio"]:checked + label::before {
+    background-color: #f080a9; /* 체크된 상태 배경색 */
+    border-color: #f080a9;
+    content: '✔'; /* 체크 마크 */
+    color: white; /* 체크 마크 색상 */
+    font-size: 14px;
+    text-align: center;
+    line-height: 20px; /* 체크 마크 정렬 */
+}
+
+.sort-options input[type="radio"]:checked + label {
+    color: #f080a9; /* 체크된 라벨 텍스트 색상 */
+}
+    
 </style>
 </head>
 <body>
@@ -115,116 +164,42 @@
 	</div>
 	
 	<div class="search-container">
-	    <form id="searchForm" method="get" action="/home/main">
-	        <label for="method">방식</label>
-	        <select id="method" name="method">
-	            <option value="">전체</option>
-	            <option value="굽기" <c:if test="${method == '굽기'}">selected</c:if>>굽기</option>
-	            <option value="끓이기" <c:if test="${method == '끓이기'}">selected</c:if>>끓이기</option>
-	            <option value="볶기" <c:if test="${method == '볶기'}">selected</c:if>>볶기</option>
-	            <option value="찌기" <c:if test="${method == '찌기'}">selected</c:if>>찌기</option>
-	            <option value="튀기기" <c:if test="${method == '튀기기'}">selected</c:if>>튀기기</option>
-	            <option value="기타" <c:if test="${method == '기타'}">selected</c:if>>기타</option>
-	        </select>
+	        <div class="search-bar">
+			    <label for="searchQuery">검색</label>
+			    <input type="text" id="searchQuery" placeholder="검색어를 입력하세요" />
+			</div>
 	
-	        <label for="category">종류</label>
-	        <select id="category" name="category">
-	            <option value="">전체</option>
-	            <option value="국&찌개" <c:if test="${category == '국&찌개'}">selected</c:if>>국&찌개</option>
-	            <option value="밥" <c:if test="${category == '밥'}">selected</c:if>>밥</option>
-	            <option value="일품" <c:if test="${category == '일품'}">selected</c:if>>일품</option>
-	            <option value="반찬" <c:if test="${category == '반찬'}">selected</c:if>>반찬</option>
-	            <option value="후식" <c:if test="${category == '후식'}">selected</c:if>>후식</option>
-	            <option value="기타" <c:if test="${category == '기타'}">selected</c:if>>기타</option>
-	        </select>
-	
-	        <label for="searchQuery">검색</label>
-	        <input type="text" id="searchQuery" name="searchQuery" value="${searchQuery}" placeholder="검색어를 입력하세요" />
-	
-	        <button type="submit" class="btn-search">검색</button>
-	    </form>
+			<div class="sort-options">
+				<input type="radio" name="sortOption" id="latest" value="latest" checked />
+			    <label for="latest"> 최신순</label>
+			    <input type="radio" name="sortOption" id="popular" value="popular" />
+			    <label for="popular"> 인기순</label>
+			    <input type="radio" name="sortOption" id="oldest" value="oldest" />
+			    <label for="oldest"> 오래된순</label>
+			</div>
+
 	</div>
+	
+
 		
 	<!-- 이미지 그리드 -->
 	<div class="image-grid-container">
 		<div class="image-grid">
-			<c:forEach var="recipeInfo" items="${recipeInfos}">
-				<div class="image-item">
-					<img src="${recipeInfo.ATT_FILE_NO_MAIN}" alt="Recipe Image"
-						onclick="window.location.href='/recipe/detail?RCP_SEQ=${recipeInfo.RCP_SEQ}'" />
-					<div class="image-text">
-						<span class="recipe-name">${recipeInfo.RCP_NM}</span>
-						<div class="recipe-method-category">
-							<span class="recipe-method">${recipeInfo.RCP_WAY2}</span> <span
-								class="recipe-category">${recipeInfo.RCP_PAT2}</span>
-						</div>
-					</div>
-				</div>
-			</c:forEach>
 		</div>
 	</div>
 	
+
+	
 	<div class="pagination">
-				<c:choose>
-					<c:when test="${page > 1}">
-						<a
-							href="/home/main?method=${method}&category=${category}&searchQuery=${searchQuery}&page=1">&lt;&lt;</a>
-						<a
-							href="/home/main?method=${method}&category=${category}&searchQuery=${searchQuery}&page=${page - 1}">&lt;</a>
-					</c:when>
-					<c:otherwise>
-						<span>&lt;&lt;</span>
-						<span>&lt;</span>
-					</c:otherwise>
-				</c:choose>
-
-				<c:set var="startPage" value="${page - 2}" />
-				<c:set var="endPage" value="${page + 2}" />
-
-				<c:if test="${startPage < 1}">
-					<c:set var="startPage" value="1" />
-				</c:if>
-
-				<c:if test="${endPage < 5}">
-					<c:set var="endPage" value="5" />
-				</c:if>
-
-				<c:if test="${endPage > pageCnt}">
-					<c:set var="endPage" value="${pageCnt}" />
-				</c:if>
-
-				<!-- 페이지 번호 출력 -->
-				<c:forEach var="i" begin="${startPage}" end="${endPage}">
-					<c:choose>
-						<c:when test="${i == page}">
-							<span class="current">${i}</span>
-						</c:when>
-						<c:otherwise>
-							<a
-								href="/home/main?method=${method}&category=${category}&searchQuery=${searchQuery}&page=${i}">${i}</a>
-						</c:otherwise>
-					</c:choose>
-				</c:forEach>
-
-				<!-- 다음 페이지로 이동 -->
-				<c:choose>
-					<c:when test="${page < pageCnt}">
-						<a
-							href="/home/main?method=${method}&category=${category}&searchQuery=${searchQuery}&page=${page + 1}">&gt;</a>
-						<a
-							href="/home/main?method=${method}&category=${category}&searchQuery=${searchQuery}&page=${pageCnt}">&gt;&gt;</a>
-					</c:when>
-					<c:otherwise>
-						<span>&gt;</span>
-						<span>&gt;&gt;</span>
-					</c:otherwise>
-				</c:choose>
-
-			</div>
+	</div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function() {
 			const textElement = document.getElementById('animatedText');
 			const text = textElement.textContent;
+			const searchInput = document.getElementById("searchQuery");
+	        const sortOptions = document.querySelectorAll('input[name="sortOption"]');
+	        const paginationContainer = document.querySelector(".pagination");
+	        const recipeContainer = document.querySelector(".image-grid");
 			textElement.textContent = '';
 			
 			for (let i = 0; i < text.length; i++) {
@@ -233,6 +208,97 @@
 					textElement.style.opacity = 1;
 				}, i * 100); // 100ms 간격으로 글자 추가
 			}
+			
+			function fetchRecipes(page = 1) {
+	            const query = searchInput.value;
+	            const sort = document.querySelector('input[name="sortOption"]:checked').value;
+
+	            fetch(`/recipe/search?page=\${page}&query=\${query}&sort=\${sort}`)
+	                .then(response => response.json())
+	                .then(data => {
+	                    renderRecipes(data.recipeInfos);
+	                    renderPagination(data.page, data.pageCnt);
+	                })
+	                .catch(error => console.error("Error fetching recipes:", error));
+	        }
+
+	        function renderRecipes(recipes) {
+	            recipeContainer.innerHTML = ""; // 기존 데이터 삭제
+	            recipes.forEach(recipe => {
+	                const recipeItem = `
+	                    <div class="image-item">
+	                        <img src="\${recipe.att_FILE_NO_MAIN}" alt="Recipe Image" 
+	                            onclick="window.location.href='/recipe/detail?RCP_SEQ=\${recipe.rcp_SEQ}'" />
+	                        <div class="image-text">
+	                            <span class="recipe-name">\${recipe.rcp_NM}</span>
+	                            <div class="recipe-method-category">
+	                                <span class="recipe-method">\${recipe.rcp_WAY2}</span>
+	                                <span class="recipe-category">\${recipe.rcp_PAT2}</span>
+	                            </div>
+	                        </div>
+	                    </div>`;
+	                recipeContainer.innerHTML += recipeItem;
+	            });
+	            
+	        }
+
+	        function renderPagination(currentPage, totalPages) {
+	            const paginationContainer = document.querySelector(".pagination");
+	            paginationContainer.innerHTML = ""; // 기존 페이지 삭제
+
+	            if (currentPage > 1) {
+	                paginationContainer.innerHTML += `
+	                    <a href="#" data-page="1">&lt;&lt;</a>
+	                    <a href="#" data-page="\${currentPage - 1}">&lt;</a>
+	                `;
+	            } else {
+	                paginationContainer.innerHTML += `
+	                    <span>&lt;&lt;</span>
+	                    <span>&lt;</span>
+	                `;
+	            }
+
+	            const startPage = Math.max(1, currentPage - 2);
+	            const endPage = Math.min(totalPages, currentPage + 2);
+
+	            for (let i = startPage; i <= endPage; i++) {
+	                if (i === currentPage) {
+	                    paginationContainer.innerHTML += `<span class="current">\${i}</span>`;
+	                } else {
+	                    paginationContainer.innerHTML += `<a href="#" data-page="\${i}">\${i}</a>`;
+	                }
+	            }
+
+	            if (currentPage < totalPages) {
+	                paginationContainer.innerHTML += `
+	                    <a href="#" data-page="\${currentPage + 1}">&gt;</a>
+	                    <a href="#" data-page="\${totalPages}">&gt;&gt;</a>
+	                `;
+	            } else {
+	                paginationContainer.innerHTML += `
+	                    <span>&gt;</span>
+	                    <span>&gt;&gt;</span>
+	                `;
+	            }
+
+	            // 페이지 클릭 이벤트 추가
+	            paginationContainer.querySelectorAll("a").forEach(pageLink => {
+	                pageLink.addEventListener("click", function (event) {
+	                    event.preventDefault();
+	                    const page = parseInt(this.getAttribute("data-page"));
+	                    fetchRecipes(page);
+	                });
+	            });
+	        }
+
+	        // 검색 이벤트
+	        searchInput.addEventListener("input", () => fetchRecipes());
+	        sortOptions.forEach(option => {
+	            option.addEventListener("change", () => fetchRecipes());
+	        });
+
+	        // 초기 로드
+	        fetchRecipes();
 		});
 
 	</script>

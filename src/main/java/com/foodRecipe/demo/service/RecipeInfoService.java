@@ -16,8 +16,8 @@ public class RecipeInfoService {
 		this.recipeInfoDao = recipeInfoDao;
 	}
 	
-	public List<Recipe_Info> findRecipeInfoAndMainImage() {
-		return recipeInfoDao.findRecipeInfoAndMainImage();
+	public List<Recipe_Info> findRecipeInfoAndMainImage(int pageSize, int offset) {
+		return recipeInfoDao.findRecipeInfoAndMainImage(pageSize, offset);
 	}
 
 	public Recipe_Detail findRecipeDetailByRCP_SEQ(Integer RCP_SEQ) {
@@ -27,4 +27,18 @@ public class RecipeInfoService {
 	public String findRCP_NMByRCP_SEQ(Integer RCP_SEQ) {
 		return recipeInfoDao.findRCP_NMByRCP_SEQ(RCP_SEQ);
 	}
+
+	public int findTotalRecipeCount() {
+		return recipeInfoDao.findTotalRecipeCount();
+	}
+
+	public List<Recipe_Info> searchRecipes(String query, String sort, int pageSize, int offset) {
+		return recipeInfoDao.recipeInfoDao(query, sort, pageSize, offset);
+	}
+
+	public int findTotalRecipeCountByQuery(String query) {
+		return recipeInfoDao.findTotalRecipeCountByQuery(query);
+	}
+
+
 }

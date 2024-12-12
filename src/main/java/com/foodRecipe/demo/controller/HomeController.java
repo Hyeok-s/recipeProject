@@ -1,13 +1,15 @@
 package com.foodRecipe.demo.controller;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.foodRecipe.demo.dto.Recipe_Info;
 import com.foodRecipe.demo.service.RecipeImageService;
@@ -30,61 +32,38 @@ public class HomeController {
 	
 	@GetMapping("/home/main")
 	public String mainForm(
-	        @RequestParam(value = "page", defaultValue = "1") int page,
-	        @RequestParam(value = "method", required = false) String method,
-	        @RequestParam(value = "category", required = false) String category,
-	        @RequestParam(value = "searchQuery", required = false) String searchQuery,
 	        Model model, HttpSession session) {
 
-	    // 모든 레시피 가져오기
-	    List<Recipe_Info> recipeInfos = recipeInfoService.findRecipeInfoAndMainImage();
-
-	    // 검색 조건이 있을 경우 필터링
-	    if (searchQuery != null && !searchQuery.isEmpty()) {
-	        recipeInfos = recipeInfos.stream()
-	                .filter(recipe -> recipe.getRCP_NM().contains(searchQuery))
-	                .collect(Collectors.toList());
+	    // 세션에 memberId가 있을 경우 추가
+	    if (session.getAttribute("memberId") != null) {
+	        model.addAttribute("memberId", session.getAttribute("memberId"));
 	    }
-
-	    if (method != null && !method.isEmpty()) {
-	        recipeInfos = recipeInfos.stream()
-	                .filter(recipe -> method.equals(recipe.getRCP_WAY2()))
-	                .collect(Collectors.toList());
-	    }
-
-	    if (category != null && !category.isEmpty()) {
-	        recipeInfos = recipeInfos.stream()
-	                .filter(recipe -> category.equals(recipe.getRCP_PAT2()))
-	                .collect(Collectors.toList());
-	    }
-
-	    // 페이지네이션 처리
-	    if (recipeInfos != null && !recipeInfos.isEmpty()) {
-	        int pageSize = 20;
-	        int start = (page - 1) * pageSize;
-	        int end = Math.min(start + pageSize, recipeInfos.size());
-
-	        List<Recipe_Info> pagedRecipeInfos = recipeInfos.subList(start, end);
-	        model.addAttribute("recipeInfos", pagedRecipeInfos);
-
-	        int pageCnt = (int) Math.ceil((double) recipeInfos.size() / pageSize);
-	        model.addAttribute("page", page);
-	        model.addAttribute("pageCnt", pageCnt);
-	    } else {
-	        model.addAttribute("recipeInfos", Collections.emptyList());
-	        model.addAttribute("page", 1);
-	        model.addAttribute("pageCnt", 1);
-	    }
-	    if(session.getAttribute("memberId") != null) {
-	    	model.addAttribute("memberId", session.getAttribute("memberId"));
-	    }
-	    // 검색 조건 유지
-	    model.addAttribute("method", method);
-	    model.addAttribute("category", category);
-	    model.addAttribute("searchQuery", searchQuery);
 
 	    return "recipe/main";
 	}
 	
+    @GetMapping("/recipe/search")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> searchRecipes(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "sort", defaultValue = "latest") String sort) {
+
+        final int pageSize = 20; // 페이지당 항목 수
+        int offset = (page - 1) * pageSize;
+
+        // 검색 및 정렬된 데이터를 가져오기
+        List<Recipe_Info> recipeInfos = recipeInfoService.searchRecipes(query, sort, pageSize, offset);
+        int totalDataCount = recipeInfoService.findTotalRecipeCountByQuery(query);
+        int totalPages = (int) Math.ceil((double) totalDataCount / pageSize);
+
+        // 응답 데이터 구성
+        Map<String, Object> response = new HashMap<>();
+        response.put("recipeInfos", recipeInfos);
+        response.put("page", page);
+        response.put("pageCnt", totalPages);
+
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -1,12 +1,18 @@
 package com.foodRecipe.demo.controller;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.foodRecipe.demo.dto.RecipeDto;
+import com.foodRecipe.demo.dto.Recipe_Info;
+import com.foodRecipe.demo.service.RecipeInfoService;
 import com.foodRecipe.demo.service.RecipeSaveService;
 import com.foodRecipe.demo.service.RecipeService;
 
@@ -14,10 +20,12 @@ import com.foodRecipe.demo.service.RecipeService;
 public class RecipeController {
     private final RecipeService recipeService;
     private final RecipeSaveService recipeSaveService;
-
-    public RecipeController(RecipeService recipeService, RecipeSaveService recipeSaveService) {
+    private final RecipeInfoService recipeInfoService;
+    
+    public RecipeController(RecipeService recipeService, RecipeSaveService recipeSaveService, RecipeInfoService recipeInfoService) {
         this.recipeService = recipeService;
         this.recipeSaveService = recipeSaveService;
+        this.recipeInfoService = recipeInfoService;
     }
 
     @GetMapping("/save-recipes")
@@ -34,6 +42,6 @@ public class RecipeController {
             return "Failed to save recipes: " + e.getMessage();
         }
     }
-   
+  
 
 }
