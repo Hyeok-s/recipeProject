@@ -36,10 +36,17 @@ public interface Recipe_InfoDao {
 
 	@Select("SELECT RCP_NM FROM Recipe_Info WHERE RCP_SEQ = #{RCP_SEQ}")
 	String findRCP_NMByRCP_SEQ(Integer RCP_SEQ);
+<<<<<<< HEAD
 
 	@Select("SELECT count(*) FROM Recipe_info")
 	int findTotalRecipeCount();
 
+=======
+	
+	@Select("SELECT count(*) FROM Recipe_info")
+	int findTotalRecipeCount();
+	
+>>>>>>> 9820606 (2024-12-13)
 	@Select("""
 			SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, image.ATT_FILE_NO_MAIN FROM Recipe_Info info
 			INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ 
@@ -51,11 +58,19 @@ public interface Recipe_InfoDao {
 			LIMIT #{pageSize} OFFSET #{offset}
 			""")
 	List<Recipe_Info> recipeInfoDao(String query, String sort, int pageSize, int offset);
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 9820606 (2024-12-13)
 	@Select("""
 			SELECT count(*) FROM Recipe_info
 			WHERE (#{query} IS NULL OR RCP_NM LIKE CONCAT('%', #{query}, '%'))
 			""")
 	int findTotalRecipeCountByQuery(String query);
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 9820606 (2024-12-13)
 }

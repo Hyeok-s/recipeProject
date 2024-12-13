@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="jakarta.tags.core" prefix="c"%>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link
@@ -111,7 +112,7 @@ header {
 
 		<div class="header-menu">
 			<a href="/recommend">오늘의 추천 메뉴</a> <a href="/wishlist">찜 항목</a> <a
-				href="/community/communityForm">메뉴 자랑</a> <a href="/contact">문의하기</a>
+				href="/community/communityForm">메뉴 자랑</a> <a href="/test">문의하기</a>
 		</div>
 	</div>
 </header>
