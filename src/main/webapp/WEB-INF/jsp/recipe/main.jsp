@@ -58,23 +58,6 @@
         margin: 20px auto;
     }
 
-<<<<<<< HEAD
-    .search-bar {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex: 1;
-        margin-left: 320px;
-    }
-
-
-
-    label {
-        font-size: 20px;
-        color: #d26d8e;
-        font-weight: bold;
-    }
-=======
 .search-bar {
     display: flex;
     align-items: center;
@@ -88,7 +71,6 @@ label {
     color: #d26d8e;
     font-weight: bold;
 }
->>>>>>> 9820606 (2024-12-13)
 
 input[type="text"] {
         padding: 12px 18px;
@@ -97,15 +79,9 @@ input[type="text"] {
         border-radius: 8px;
         background-color: #fff;
         color: #333;
-<<<<<<< HEAD
-        width: 100%; /* 입력창 너비를 부모에 맞게 */
-        max-width: 500px; /* 최대 너비 설정 */
-        box-sizing: border-box; /* padding 포함된 크기 설정 */
-=======
         width: 100%;
         max-width: 500px;
         box-sizing: border-box;
->>>>>>> 9820606 (2024-12-13)
     }
 
 input[type="text"]:focus {
@@ -121,14 +97,6 @@ input[type="text"]:focus {
     margin-right: 320px;
 }
 
-<<<<<<< HEAD
-.sort-options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-=======
 .sort-options {
     display: flex;
     gap: 20px;
@@ -143,7 +111,6 @@ input[type="text"]:focus {
     gap: 8px;
 }
 
->>>>>>> 9820606 (2024-12-13)
 .sort-options input[type="radio"] {
     display: none; /* 기본 라디오 버튼 숨김 */
 }
@@ -184,10 +151,6 @@ input[type="text"]:focus {
 .sort-options input[type="radio"]:checked + label {
     color: #f080a9; /* 체크된 라벨 텍스트 색상 */
 }
-<<<<<<< HEAD
-    
-=======
->>>>>>> 9820606 (2024-12-13)
 </style>
 </head>
 <body>
@@ -206,20 +169,11 @@ input[type="text"]:focus {
 	</div>
 	
 	<div class="search-container">
-<<<<<<< HEAD
-	        <div class="search-bar">
-=======
 	    <div class="search-bar">
->>>>>>> 9820606 (2024-12-13)
 			    <label for="searchQuery">검색</label>
 			    <input type="text" id="searchQuery" placeholder="검색어를 입력하세요" />
 			</div>
-	
-<<<<<<< HEAD
-			<div class="sort-options">
-=======
-	        <div class="sort-options">
->>>>>>> 9820606 (2024-12-13)
+		        <div class="sort-options">
 				<input type="radio" name="sortOption" id="latest" value="latest" checked />
 			    <label for="latest"> 최신순</label>
 			    <input type="radio" name="sortOption" id="popular" value="popular" />
@@ -227,10 +181,6 @@ input[type="text"]:focus {
 			    <input type="radio" name="sortOption" id="oldest" value="oldest" />
 			    <label for="oldest"> 오래된순</label>
 			</div>
-<<<<<<< HEAD
-
-=======
->>>>>>> 9820606 (2024-12-13)
 	</div>
 	
 
@@ -245,10 +195,6 @@ input[type="text"]:focus {
 	
 	<div class="pagination">
 	</div>
-<<<<<<< HEAD
-=======
-	
->>>>>>> 9820606 (2024-12-13)
 	<script>
 		document.addEventListener("DOMContentLoaded", function() {
 			const textElement = document.getElementById('animatedText');
@@ -269,10 +215,7 @@ input[type="text"]:focus {
 			function fetchRecipes(page = 1) {
 	            const query = searchInput.value;
 	            const sort = document.querySelector('input[name="sortOption"]:checked').value;
-<<<<<<< HEAD
 
-=======
->>>>>>> 9820606 (2024-12-13)
 	            fetch(`/recipe/search?page=\${page}&query=\${query}&sort=\${sort}`)
 	                .then(response => response.json())
 	                .then(data => {
@@ -281,10 +224,7 @@ input[type="text"]:focus {
 	                })
 	                .catch(error => console.error("Error fetching recipes:", error));
 	        }
-<<<<<<< HEAD
 
-=======
->>>>>>> 9820606 (2024-12-13)
 	        function renderRecipes(recipes) {
 	            recipeContainer.innerHTML = ""; // 기존 데이터 삭제
 	            recipes.forEach(recipe => {
@@ -304,17 +244,10 @@ input[type="text"]:focus {
 	            });
 	            
 	        }
-<<<<<<< HEAD
 
 	        function renderPagination(currentPage, totalPages) {
 	            const paginationContainer = document.querySelector(".pagination");
 	            paginationContainer.innerHTML = ""; // 기존 페이지 삭제
-
-=======
-	        function renderPagination(currentPage, totalPages) {
-	            const paginationContainer = document.querySelector(".pagination");
-	            paginationContainer.innerHTML = ""; // 기존 페이지 삭제
->>>>>>> 9820606 (2024-12-13)
 	            if (currentPage > 1) {
 	                paginationContainer.innerHTML += `
 	                    <a href="#" data-page="1">&lt;&lt;</a>
@@ -326,15 +259,9 @@ input[type="text"]:focus {
 	                    <span>&lt;</span>
 	                `;
 	            }
-<<<<<<< HEAD
 
 	            const startPage = Math.max(1, currentPage - 2);
 	            const endPage = Math.min(totalPages, currentPage + 2);
-
-=======
-	            const startPage = Math.max(1, currentPage - 2);
-	            const endPage = Math.min(totalPages, currentPage + 2);
->>>>>>> 9820606 (2024-12-13)
 	            for (let i = startPage; i <= endPage; i++) {
 	                if (i === currentPage) {
 	                    paginationContainer.innerHTML += `<span class="current">\${i}</span>`;
@@ -342,10 +269,7 @@ input[type="text"]:focus {
 	                    paginationContainer.innerHTML += `<a href="#" data-page="\${i}">\${i}</a>`;
 	                }
 	            }
-<<<<<<< HEAD
 
-=======
->>>>>>> 9820606 (2024-12-13)
 	            if (currentPage < totalPages) {
 	                paginationContainer.innerHTML += `
 	                    <a href="#" data-page="\${currentPage + 1}">&gt;</a>
@@ -357,10 +281,7 @@ input[type="text"]:focus {
 	                    <span>&gt;&gt;</span>
 	                `;
 	            }
-<<<<<<< HEAD
 
-=======
->>>>>>> 9820606 (2024-12-13)
 	            // 페이지 클릭 이벤트 추가
 	            paginationContainer.querySelectorAll("a").forEach(pageLink => {
 	                pageLink.addEventListener("click", function (event) {
@@ -370,19 +291,11 @@ input[type="text"]:focus {
 	                });
 	            });
 	        }
-<<<<<<< HEAD
-
-=======
->>>>>>> 9820606 (2024-12-13)
 	        // 검색 이벤트
 	        searchInput.addEventListener("input", () => fetchRecipes());
 	        sortOptions.forEach(option => {
 	            option.addEventListener("change", () => fetchRecipes());
 	        });
-<<<<<<< HEAD
-
-=======
->>>>>>> 9820606 (2024-12-13)
 	        // 초기 로드
 	        fetchRecipes();
 		});

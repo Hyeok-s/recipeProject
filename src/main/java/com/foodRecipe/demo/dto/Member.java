@@ -19,6 +19,7 @@ public class Member {
     private String nickName;
     private LocalDate regDate;
     private LocalDate updateDate;
+    private String gender;
     
     public Member(String email, String pw, String name, String phoneNumber, int bir, String nickName) {
     	this.email = email;

@@ -21,4 +21,5 @@ public class Recipe_Detail {
     private Integer INFO_FAT;
     private Integer INFO_NA;
     private String RCP_NA_TIP;
+    private int count;
 }

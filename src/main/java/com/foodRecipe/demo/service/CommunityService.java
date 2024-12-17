@@ -126,5 +126,10 @@ public class CommunityService {
 		communityDao.updateCommunity(community);
 	}
 
+	public void incrementCommunityCount(int communityId) {
+		communityDao.incrementCommunityCount(communityId);
+		
+	}
+
 
 }

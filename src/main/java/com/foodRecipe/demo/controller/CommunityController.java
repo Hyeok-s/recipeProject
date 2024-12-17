@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -36,6 +33,9 @@ import com.foodRecipe.demo.dto.LikeDislike;
 import com.foodRecipe.demo.service.CommunityService;
 import com.foodRecipe.demo.util.Util;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -80,8 +80,36 @@ public class CommunityController {
 	}
 	
 	@GetMapping("/community/detail")
-	public String detailForm(@RequestParam("id") int communityId, Model model, HttpSession session) {
+	public String detailForm(@RequestParam("id") int communityId, Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		Map<String, List<Category>> categories = communityService.findAllCategory();
+		
+	    Cookie[] cookies = request.getCookies();
+	    Cookie lastVisitCookie = null;
+	    for (Cookie cookie : cookies) {
+	    	if (cookie.getName().equals("lastVisitTime_" + communityId)) {
+	            lastVisitCookie = cookie;
+	            break;
+	        }
+	    }
+	    
+	    long currentTime = System.currentTimeMillis();
+	    if (lastVisitCookie != null) {
+	        long lastVisitTime = Long.parseLong(lastVisitCookie.getValue());
+	        // 2시간(7200000ms)이 지난 경우에만 카운트 증가
+	        if (currentTime - lastVisitTime >= 7200000) {
+	            communityService.incrementCommunityCount(communityId);
+	            lastVisitCookie.setValue(String.valueOf(currentTime));
+	            lastVisitCookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유효
+	            response.addCookie(lastVisitCookie);
+	        }
+	    } else {
+	        // 처음 방문하는 경우
+	        communityService.incrementCommunityCount(communityId);
+	        Cookie newVisitCookie = new Cookie("lastVisitTime_" + communityId, String.valueOf(currentTime)); // 고유한 쿠키 이름 사용
+	        newVisitCookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유효
+	        response.addCookie(newVisitCookie);
+	    }
+		
 		Community cmu = communityService.findCommunityById(communityId);
 		List<Map<String, String>> contentList = Util.parseContent(cmu.getBody());
 		
@@ -114,6 +142,7 @@ public class CommunityController {
 		}
 		model.addAttribute("isLiked", isLiked);
 	    model.addAttribute("isDisliked", isDisliked);
+	    
 		return "community/detail";
 	}
 	

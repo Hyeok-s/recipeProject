@@ -79,8 +79,8 @@ body {
 
 .book-image img {
     max-width: 320px;
-    width: 320px;
-    height: auto;
+	width: 300px;
+    height: 300px;
     border-radius: 50%;
     object-fit: cover;
     position: absolute;

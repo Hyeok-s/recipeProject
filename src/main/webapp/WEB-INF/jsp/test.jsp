@@ -1,22 +1,35 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>YOLOv5 Image Detection</title>
+<title>Object Detection</title>
 </head>
 <body>
-    <h1>YOLOv5 이미지 탐지</h1>
-    <form action="uploadImage" method="post" enctype="multipart/form-data">
-        <label for="image">이미지 업로드:</label>
-        <input type="file" name="image" id="image" accept="image/*" required>
-        <button type="submit">분석</button>
-    </form>
-
-    <c:if test="${not empty prediction}">
-        <h2>결과:</h2>
-        <img src="${prediction.image}" alt="탐지 결과">
-        <pre>${prediction.data}</pre>
-    </c:if>
+	<h1>Object Detection Result</h1>
+	<form action="/upload" method="post" enctype="multipart/form-data">
+		<label for="file">Upload an image:</label> <input type="file"
+			name="file" id="file" required>
+		<button type="submit">Upload</button>
+	</form>
+	<c:if test="${not empty resultImage}">
+		<h2>Original Image</h2>
+		<img src="${originalImage}" alt="Original Image"
+			style="max-width: 500px;">
+		<h2>Detected Objects</h2>
+		<img src="${resultImage}" alt="Detected Image"
+			style="max-width: 500px;">
+		<h3>Detected Object Details</h3>
+		<ul>
+			<c:forEach var="detection" items="${detections}">
+				<li>Object: ${detection['name']} <br> Confidence:
+					${detection['confidence']}% <br> Location:
+					[${detection['x_min']}, ${detection['y_min']}],
+					[${detection['x_max']}, ${detection['y_max']}]
+				</li>
+			</c:forEach>
+		</ul>
+	</c:if>
 </body>
 </html>

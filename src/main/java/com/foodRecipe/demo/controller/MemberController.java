@@ -2,7 +2,8 @@ package com.foodRecipe.demo.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.UUID;
+import java.util.Collections;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,11 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import com.foodRecipe.demo.dto.Member;
 import com.foodRecipe.demo.service.MemberService;
 import com.foodRecipe.demo.util.Util;
-
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -68,18 +69,24 @@ public class MemberController {
 	        return "redirect:/";
 	    }
 
-	@GetMapping("/member/checkEmail")
-	public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam String email) {
-		boolean exists = memberService.isEmailExists(email);
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("exists", exists);
-		return ResponseEntity.ok(response);
+	@PostMapping("/member/checkEmail")
+	@ResponseBody
+	public ResponseEntity<String> checkEmail(@RequestParam String email) throws MessagingException {
+		
+		String token = UUID.randomUUID().toString();
+		String verificationUrl = "http://example.com/verify?token=" + token;
+		
+		memberService.sendVerificationEmail(email, verificationUrl);
+		
+		return ResponseEntity.ok("이메일을 확인해 인증해주세요.");
 	}
+	
 	
 	@GetMapping("/member/loginForm")
 	public String LoginForm() {
 		return "member/login";
 	}
+	
 	
 	@PostMapping("/member/login")
 	@ResponseBody
@@ -98,5 +105,36 @@ public class MemberController {
 	public String Logout(HttpSession session) {
 		session.removeAttribute("memberId");
 		return Util.jsReturn("로그아웃되었습니다.", "/");
+	}
+	
+	@GetMapping("/member/mypageForm")
+	public String mypageForm(HttpSession session, Model model) {
+		int id = (int)session.getAttribute("memberId");
+		Member member = memberService.finMemberById(id);
+		model.addAttribute("member", member);
+		return "member/mypage";
+	}
+	@PostMapping("/member/checkPassword")
+	@ResponseBody
+	public Map<String, Boolean> checkPassword(@RequestBody Map<String, String> payload, HttpSession session) {
+	    String pw = payload.get("password");
+	    int memberId = (int) session.getAttribute("memberId");
+	    boolean success = memberService.checkPassword(memberId, pw);
+	    return Collections.singletonMap("success", success);
+	}
+	
+	@PostMapping("/member/updateMember")
+	@ResponseBody
+	public String updateMember(
+            @RequestParam("pw") String pw,
+            @RequestParam("pwChk") String pwChk, @RequestParam("nickName") String nickName,
+            HttpSession session) {
+		
+		if(!pw.equals(pwChk)) {
+			return Util.jsReturn("비밀번호를 다시 확인해주세요", null);
+		}
+		int id = (int) session.getAttribute("memberId");
+		memberService.updateMember(id, pw, nickName);
+		return Util.jsReturn("변경되었습니다.", "/member/mypageForm");
 	}
 }

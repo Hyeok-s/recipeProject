@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
 import com.foodRecipe.demo.dto.Member;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface MemberDao {
@@ -21,5 +22,20 @@ public interface MemberDao {
 
 	@Select("SELECT * FROM member WHERE email=#{email} AND pw=#{pw}")
 	public Member findMemberByEmailAndPw(String email, String pw);
+	
+	@Select("SELECT * FROM member WHERE id = #{id}")
+	public Member finMemberById(int id);
+	
+	@Select("SELECT COUNT(*) FROM member WHERE id = #{memberId} AND pw = #{pw}")
+	public boolean checkPassword(int memberId, String pw);
+	
+	@Update("<script>" +
+	        "UPDATE member " +
+	        "SET " +
+	        "<if test='pw != \"\"'>pw = #{pw},</if>" +
+	        "nickName = #{nickName} " +
+	        "WHERE id = #{id}" +
+	        "</script>")
+	public void updateMember(int id, String pw, String nickName);
 
 }

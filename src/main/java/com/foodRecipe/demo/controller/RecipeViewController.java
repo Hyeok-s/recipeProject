@@ -14,6 +14,10 @@ import com.foodRecipe.demo.service.RecipeInfoService;
 import com.foodRecipe.demo.service.RecipeIngredientService;
 import com.foodRecipe.demo.service.RecipeManualService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Controller
 public class RecipeViewController {
 	private RecipeInfoService recipeInforService;
@@ -28,13 +32,39 @@ public class RecipeViewController {
     
     @GetMapping("/recipe/detail")
     public String recipeDetailForm(@RequestParam("RCP_SEQ") Integer RCP_SEQ, @RequestParam(value = "isRecognitionActive", defaultValue = "false") boolean isRecognitionActive, 
-    		@RequestParam(value = "isVolumeOn", defaultValue = "true") boolean isVolumeOn, Model model) {
+    		@RequestParam(value = "isVolumeOn", defaultValue = "true") boolean isVolumeOn, Model model, HttpServletRequest request, HttpServletResponse response) {
     	Recipe_Detail details = recipeInforService.findRecipeDetailByRCP_SEQ(RCP_SEQ);
     	List<Recipe_Ingredient> ingredients = recipeIngredient.findIngredientsByRCP_SEQ(RCP_SEQ);
     	model.addAttribute("details", details);
     	model.addAttribute("ingredients", ingredients);
     	model.addAttribute("isRecognitionActive", isRecognitionActive);
     	model.addAttribute("isVolumeOn", isVolumeOn);
+    	
+	    Cookie[] cookies = request.getCookies();
+	    Cookie lastMainVisitCookie = null;
+	    for (Cookie cookie : cookies) {
+	    	if (cookie.getName().equals("lastMainVisitTime_" + RCP_SEQ)) {
+	    		lastMainVisitCookie = cookie;
+	            break;
+	        }
+	    }
+	    
+	    long currentTime = System.currentTimeMillis();
+	    if (lastMainVisitCookie != null) {
+	        long lastVisitTime = Long.parseLong(lastMainVisitCookie.getValue());
+	        if (currentTime - lastVisitTime >= 7200000) {
+	        	recipeInforService.incrementInfoCount(RCP_SEQ);
+	            lastMainVisitCookie.setValue(String.valueOf(currentTime));
+	            lastMainVisitCookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유효
+	            response.addCookie(lastMainVisitCookie);
+	        }
+	    } else {
+	        // 처음 방문하는 경우
+	    	recipeInforService.incrementInfoCount(RCP_SEQ);
+	        Cookie newVisitCookie = new Cookie("lastMainVisitTime_" + RCP_SEQ, String.valueOf(currentTime)); // 고유한 쿠키 이름 사용
+	        newVisitCookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유효
+	        response.addCookie(newVisitCookie);
+	    }
     	return "recipe/detail";
     }
     

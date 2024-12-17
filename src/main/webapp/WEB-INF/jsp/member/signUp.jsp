@@ -154,7 +154,7 @@ button:hover {
             <form action="/member/signUp" method="post">
                 <div class="email-container">
                     <input type="text" name="email" id="email" placeholder="이메일" required>
-                    <button type="button" onclick="checkEmail()">중복 확인</button>
+                    <button type="button" onclick="checkEmail()">메일 인증</button>
                 </div>
                 <div id="emailError" style="color:red;"></div><br/>
                 <input type="password" name="pw" id="pw" placeholder="비밀번호" oninput="validatePw()" required>
@@ -283,30 +283,19 @@ function setupPhoneInput() {
 
 let isEmailChecked = false;
 checkedEmail = "";
-//이메일 형식 검증 및 중복확인
+
 function checkEmail() {
     const email = document.getElementById("email").value;
-    const emailError = document.getElementById("emailError");
-
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-        emailError.textContent = "유효한 형식이 아닙니다";
-        isEmailChecked = false;
-        return;
-    }
     
- 	// 서버로 이메일 중복 확인 요청
-    fetch(`/member/checkEmail?email=\${email}`)
+    fetch(`/member/checkEmail?email=\${email}`,{
+    	method: 'POST'
+    })
         .then(response => response.json())
         .then(data => {
-            if (data.exists) {
-                emailError.textContent = "이미 가입된 이메일입니다.";
-                isEmailChecked = false;
-            } else {
-                emailError.textContent = "사용 가능한 이메일입니다.";
+            if (data) {
+            	document.getElementById("emailError").textContent = data;
                 isEmailChecked = true;
-                checkedEmail = email;
-            }
+            } 
         })
         .catch(error => {
             emailError.textContent = "서버 오류가 발생했습니다.";
@@ -326,6 +315,7 @@ function validatePw() {
     } else {
     	pwError.textContent = "";
     }
+    checkPwdMatch();
 }
 
 //비밀번호 일치 여부 검사
@@ -339,6 +329,7 @@ function checkPwdMatch() {
     } else {
     	pwMatchError.textContent = "";
     }
+    validatePw();
 }
 
 //최종 유효성 검사 (이메일과 비밀번호)
@@ -349,7 +340,7 @@ function finalValidation() {
     const emailError = document.getElementById("emailError");
     
     if (!isEmailChecked) {
-        alert("이메일 중복 확인을 다시 해주세요.");
+        alert("이메일 인증을 해주세요.");
         return false;
     }
     

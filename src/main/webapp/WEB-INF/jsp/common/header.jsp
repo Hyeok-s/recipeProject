@@ -95,14 +95,14 @@ header {
 <header>
 	<div class="header-top">
 	    <div class="header-auth">
-	            <c:if test="${empty memberId}">
-	                <a href="/member/loginForm">로그인</a>
-	                <a href="/member/signUpForm">회원가입</a>
-	            </c:if>
-	            <c:if test="${not empty memberId}">
-	                <a href="/member/logout">로그아웃</a>
-	                <a href="/member/myPage">마이페이지</a>
-	            </c:if>
+			<c:if test="${empty memberId or memberId == -1}">
+			    <a href="/member/loginForm">로그인</a>
+			    <a href="/member/signUpForm">회원가입</a>
+			</c:if>
+			<c:if test="${not empty memberId and memberId != -1}">
+			    <a href="/member/logout">로그아웃</a>
+			    <a href="/member/mypageForm">마이페이지</a>
+			</c:if>
 	    </div>
 	</div>
 	<div class="header-bottom">

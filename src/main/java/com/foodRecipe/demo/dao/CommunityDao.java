@@ -120,5 +120,8 @@ public interface CommunityDao {
 				WHERE id = #{id}
 			""")
 	void updateCommunity(Community community);
+
+	@Update("Update community SET count=count + 1 WHERE id=#{communityId}")
+	void incrementCommunityCount(int communityId);
 	
 }

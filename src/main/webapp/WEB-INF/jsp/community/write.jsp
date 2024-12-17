@@ -14,11 +14,18 @@
 	margin: 30px auto;
 	overflow: hidden;
 	gap: 40px;
+	margin-top: 0px;
+}
+
+.content {
+	width: 60%;
+	margin-top: 150px;
+	margin-left: 50px;
 }
 
 /* 카테고리 메뉴 */
 .sidebar {
-	width: 15%; /* 너비 약간 증가 */
+	width: 20%; /* 너비 약간 증가 */
 	padding: 20px;
 	padding-top: 90px;
 }
@@ -33,6 +40,7 @@
 .sidebar ul {
 	list-style: none;
 	padding: 0;
+	padding-right:84px;
 }
 
 .sidebar ul li {
@@ -119,11 +127,20 @@
     font-size: 16px;
     cursor: pointer;
 }
+.line {
+    width: 100%;
+    height: 3.3px;
+    background-color: #eea3aa;
+    margin-top: 20px;
+    margin-left: 220px;
+    
+}
 </style>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/common/header.jsp"%>
 	<%@ include file="/WEB-INF/jsp/common/toastUiEditorLib.jsp"%>
+	<div class="line"></div>
 	<div class="container">
 		<div class="sidebar">
 			<ul>

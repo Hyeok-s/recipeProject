@@ -19,6 +19,7 @@
 	margin: 30px auto; /* 상단 여백 추가 */
 	overflow: hidden;
 	gap: 40px; /* 사이드바와 콘텐츠 간격 */
+	margin-top: 0px;
 }
 
 /* 카테고리 메뉴 */
@@ -88,6 +89,7 @@
 	padding: 20px;
 	background-color: #ffffff; /* 콘텐츠 배경 흰색 */
 	box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1); /* 왼쪽에만 그림자 */
+	margin-top: 0px;
 }
 
 .content h1 {
@@ -219,7 +221,7 @@
 
 .main-image {
 	width: 80%;
-	height: 24%;
+	height: 32%;
 	margin: 0 auto;
 	display: block;
 }
