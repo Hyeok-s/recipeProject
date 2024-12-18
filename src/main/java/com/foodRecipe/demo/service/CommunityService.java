@@ -126,10 +126,31 @@ public class CommunityService {
 		communityDao.updateCommunity(community);
 	}
 
+	public List<Community> findAllCommunityByMemberId(int memberId) {
+		return communityDao.findAllCommunityByMemberId(memberId);
+	}
+
+	public String findcategoryNameByid(int id) {
+		return communityDao.findcategoryNameByid(id);
+	}
+
+	public List<Category> findSubCategoriesByMainId(String mainCategory) {
+		return communityDao.findSubCategoriesByMainId(mainCategory);
+	}
+
+	public List<Community> searchCommunity(String mainCategory, int categoryId, String keyword) {
+		if (mainCategory.isEmpty() && categoryId == 0 && keyword.isEmpty()) {
+	        return findAllCommunity();
+	    }
+		if(mainCategory.equals("0")) {
+			mainCategory = "";
+		}
+		return communityDao.searchCommunity(mainCategory, categoryId, keyword);
+	}
+	
 	public void incrementCommunityCount(int communityId) {
 		communityDao.incrementCommunityCount(communityId);
 		
 	}
-
 
 }

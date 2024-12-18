@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,18 +51,29 @@ public class CommunityController {
 	
 	@GetMapping("/community/communityForm")
 	public String coummunityForm(@RequestParam(value = "categoryId", defaultValue = "0") int categoryId,
-			@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "mainCategory", defaultValue = "") String mainCategory,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
+			Model model) {
 		Map<String, List<Category>> categories = communityService.findAllCategory();
 		model.addAttribute("categories", categories);
-		List<Community> cmuLists = new ArrayList<>();
 		
-		if(categoryId == 0) {
-			cmuLists = communityService.findAllCommunity();
+		List<Community> cmuLists = communityService.searchCommunity(mainCategory, categoryId, keyword);
+		
+		if((!mainCategory.isEmpty() && mainCategory != "") && categoryId == 0) {
+			if(mainCategory.equals("0")) {
+				model.addAttribute("categoryName", "전체 게시판");
+			}
+			else {
+				model.addAttribute("categoryName", mainCategory);
+			}
 		}
 		else {
-			cmuLists = communityService.findCommunityByCategoryId(categoryId);
+				String categoryName = communityService.findcategoryNameByid(categoryId);
+				model.addAttribute("categoryName", categoryName);
 		}
-		
+
+
 		if (cmuLists != null || !cmuLists.isEmpty()) {
 			int pageSize = 18;
 			int start = (page - 1) * pageSize;
@@ -80,10 +90,11 @@ public class CommunityController {
 	}
 	
 	@GetMapping("/community/detail")
-	public String detailForm(@RequestParam("id") int communityId, Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+	public String detailForm(@RequestParam("id") int communityId, Model model, 
+			HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		Map<String, List<Category>> categories = communityService.findAllCategory();
 		
-	    Cookie[] cookies = request.getCookies();
+		Cookie[] cookies = request.getCookies();
 	    Cookie lastVisitCookie = null;
 	    for (Cookie cookie : cookies) {
 	    	if (cookie.getName().equals("lastVisitTime_" + communityId)) {
@@ -109,7 +120,7 @@ public class CommunityController {
 	        newVisitCookie.setMaxAge(60 * 60 * 24); // 24시간 동안 유효
 	        response.addCookie(newVisitCookie);
 	    }
-		
+	    
 		Community cmu = communityService.findCommunityById(communityId);
 		List<Map<String, String>> contentList = Util.parseContent(cmu.getBody());
 		
@@ -142,7 +153,6 @@ public class CommunityController {
 		}
 		model.addAttribute("isLiked", isLiked);
 	    model.addAttribute("isDisliked", isDisliked);
-	    
 		return "community/detail";
 	}
 	
@@ -377,5 +387,12 @@ public class CommunityController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	        }
 	    }
+	 
+	 @GetMapping("/community/subCategories")
+	 @ResponseBody
+	 public List<Category> getSubCategories(@RequestParam String mainCategory) {
+		 List<Category> category = communityService.findSubCategoriesByMainId(mainCategory);
+	     return category;
+	 }
 
 }

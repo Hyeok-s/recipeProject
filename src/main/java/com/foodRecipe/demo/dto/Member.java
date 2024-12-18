@@ -21,12 +21,13 @@ public class Member {
     private LocalDate updateDate;
     private String gender;
     
-    public Member(String email, String pw, String name, String phoneNumber, int bir, String nickName) {
+    public Member(String email, String pw, String name, String phoneNumber, int bir, String nickName, String gender) {
     	this.email = email;
     	this.pw = pw;
     	this.name = name;
     	this.phoneNumber = phoneNumber;
     	this.bir = bir;
     	this.nickName = nickName;
+    	this.gender = gender;
     }
 }

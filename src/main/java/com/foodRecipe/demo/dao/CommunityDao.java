@@ -121,7 +121,35 @@ public interface CommunityDao {
 			""")
 	void updateCommunity(Community community);
 
-	@Update("Update community SET count=count + 1 WHERE id=#{communityId}")
-	void incrementCommunityCount(int communityId);
+	@Select("SELECT * FROM community WHERE memberId = #{memberId} ORDER BY updateDate DESC")
+	List<Community> findAllCommunityByMemberId(int memberId);
+
+	@Select("SELECT subCategory FROM category WHERE id = #{id}")
+	String findcategoryNameByid(int id);
+
+	@Select("SELECT id, subCategory FROM category WHERE mainCategory = #{mainCategory}")
+	List<Category> findSubCategoriesByMainId(String mainCategory);
+
+    @Select("""
+				<script>
+			        SELECT c.*
+			        FROM community c
+			        JOIN category cat ON c.categoryId = cat.id
+			        WHERE 1=1
+			        <if test="mainCategory != null and mainCategory != ''">
+			            AND cat.mainCategory = #{mainCategory}
+			        </if>
+			        <if test="categoryId != 0">
+			            AND cat.id = #{categoryId}
+			        </if>
+			        <if test="keyword != null and keyword != ''">
+			            AND (c.title LIKE CONCAT('%', #{keyword}, '%'))
+			        </if>
+			        ORDER BY c.updateDate DESC
+			    </script>
+        """)
+	List<Community> searchCommunity(String mainCategory, int categoryId, String keyword);
 	
+    @Update("Update community SET count=count + 1 WHERE id=#{communityId}")
+	void incrementCommunityCount(int communityId);
 }

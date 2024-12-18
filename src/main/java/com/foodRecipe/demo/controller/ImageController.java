@@ -1,62 +1,103 @@
 package com.foodRecipe.demo.controller;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Map;
+import com.foodRecipe.demo.dto.Recipe_Info;
+import com.foodRecipe.demo.service.RecipeImageService;
+import com.foodRecipe.demo.service.RecipeInfoService;
+
+import org.springframework.core.io.Resource;
 
 @Controller
 public class ImageController {
 
-	@Value("${flask.server.url}") // Python 서버의 URL
-	private String pythonServerUrl;
-
-	@PostMapping("/upload")
-	@ResponseBody
-	public Map<String, Object> uploadFile(MultipartFile file) throws IOException {
-		// RestTemplate 사용
-		RestTemplate restTemplate = new RestTemplate();
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-		// 이미지 파일 데이터 생성
-		ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
-			@Override
-			public String getFilename() {
-				return file.getOriginalFilename(); // 파일 이름 설정
-			}
-		};
-		// MultiPart 데이터 생성
-		MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-		body.add("image", resource); // Python 서버가 요구하는 키에 파일 추가
-		// HTTP 요청 엔티티 생성
-		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
-
-		String url = "http://127.0.0.1:5000/detect";
-
-		// 요청 전송
-		try {
-			ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);
-			return response.getBody(); // Python 서버 응답 반환
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Error sending file to Python server: " + e.getMessage());
-		}
+	RecipeInfoService recipeInfoService;
+	
+	public ImageController(RecipeInfoService recipeInfoService) {
+		this.recipeInfoService = recipeInfoService;
 	}
+
+    @PostMapping("/image/upload")
+    @ResponseBody
+    public Map<String, Object> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // HTTP 헤더 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        // 파일 데이터를 ByteArrayResource로 변환
+        ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
+            @Override
+            public String getFilename() {
+                return file.getOriginalFilename();
+            }
+        };
+
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("image", resource);
+
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        String url = "http://127.0.0.1:5000/detect";
+
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Map.class);
+            Map<String, Object> responseBody = response.getBody();
+
+            String resultImageUrl = "/image/showImage?pic=" + responseBody.get("image_url");
+            List<String> detectedLabels = (List<String>) responseBody.get("labels");
+            
+            Map<String, Object> result = new HashMap<>();
+            if(detectedLabels == null && detectedLabels.isEmpty()) {
+            	result.put("result", 0);
+            	result.put("message", "사진 내 인식된 재료가 없습니다.");
+            }
+            else {
+            	List<Recipe_Info> recipeInfos = recipeInfoService.findRecipesByIngredients(detectedLabels);
+            	if (recipeInfos.isEmpty()) {
+                	result.put("result", 1);
+                    result.put("message", "해당 재료로 검색된 레시피가 없습니다.");
+                }
+            	else {
+                	result.put("result", 2);
+                    result.put("recipes", recipeInfos);
+                }
+            }
+            result.put("resultImageUrl", resultImageUrl);
+            result.put("detectedLabels", detectedLabels);
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error sending file to Python server: " + e.getMessage());
+        }
+    }
+    
+    @GetMapping("/image/showImage")
+    @ResponseBody
+    public Resource showImage(String pic) throws IOException{
+    	return new UrlResource("file:" + pic);
+    }
+
 }

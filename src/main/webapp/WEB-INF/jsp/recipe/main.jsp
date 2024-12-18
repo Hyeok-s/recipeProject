@@ -89,13 +89,6 @@ input[type="text"]:focus {
         outline: none;
     }
     
-.sort-options {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    font-size: 16px;
-    margin-right: 320px;
-}
 
 .sort-options {
     display: flex;
@@ -131,7 +124,7 @@ input[type="text"]:focus {
     top: 0;
     width: 20px;
     height: 20px;
-    border: 2px solid #ffc0cb; /* 테두리 색상 */
+    border: 2px solid #ffc0cb;/* 테두리 색상 */
     border-radius: 3px; /* 체크박스 형태 */
     background-color: white;
     transition: all 0.3s ease;
@@ -172,8 +165,8 @@ input[type="text"]:focus {
 	    <div class="search-bar">
 			    <label for="searchQuery">검색</label>
 			    <input type="text" id="searchQuery" placeholder="검색어를 입력하세요" />
-			</div>
-		        <div class="sort-options">
+		</div>
+	        <div class="sort-options">
 				<input type="radio" name="sortOption" id="latest" value="latest" checked />
 			    <label for="latest"> 최신순</label>
 			    <input type="radio" name="sortOption" id="popular" value="popular" />

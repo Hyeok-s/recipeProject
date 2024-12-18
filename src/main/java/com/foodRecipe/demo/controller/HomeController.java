@@ -1,22 +1,17 @@
 package com.foodRecipe.demo.controller;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.foodRecipe.demo.dto.Recipe_Info;
-import com.foodRecipe.demo.service.RecipeImageService;
 import com.foodRecipe.demo.service.RecipeInfoService;
 
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +20,7 @@ import jakarta.servlet.http.HttpSession;
 public class HomeController {
 	RecipeInfoService recipeInfoService;
 	
-	public HomeController(RecipeInfoService recipeInfoService, RecipeImageService recipeImageService) {
+	public HomeController(RecipeInfoService recipeInfoService) {
 		this.recipeInfoService = recipeInfoService;
 	}
 	
@@ -37,16 +32,13 @@ public class HomeController {
 	@GetMapping("/home/main")
 	public String mainForm(
 	        Model model, HttpSession session) {
-
-	    // 세션에 memberId가 있을 경우 추가
 	    if (session.getAttribute("memberId") != null) {
 	        model.addAttribute("memberId", session.getAttribute("memberId"));
 	    }
-
 	    return "recipe/main";
 	}
 	
-	 @GetMapping("/recipe/search")
+	@GetMapping("/recipe/search")
     @ResponseBody
 	    public ResponseEntity<Map<String, Object>> searchRecipes(
 	            @RequestParam(value = "page", defaultValue = "1") int page,

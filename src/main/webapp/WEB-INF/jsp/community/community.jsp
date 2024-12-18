@@ -130,19 +130,6 @@
 	padding-bottom: 14px;
 }
 
-.new-post-btn {
-	display: inline-block;
-	padding: 12px 25px; /* 버튼 크기 증가 */
-	background-color: #ff8c42;
-	color: white;
-	text-decoration: none;
-	border-radius: 5px;
-	font-size: 18px;
-	font-weight: bold;
-	text-align: center;
-	transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
 .board-table td:first-child {
 	width: 60%;
 }
@@ -177,31 +164,60 @@
 
 .search-container {
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	margin-top: 20px;
+    gap: 20px; 
 }
 
-.search-input {
-	width: 80%;
-	padding: 10px;
-	font-size: 16px;
-	border-radius: 5px;
-	border: 1px solid #ddd;
+.search-container select,
+.search-container input,
+.search-container button {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
-.search-btn {
-	background-color: #ff8c42;
-	color: white;
-	padding: 10px 20px;
-	font-size: 16px;
-	border-radius: 5px;
-	border: none;
-	cursor: pointer;
+.search-container select {
+    width: 200px;
 }
 
-.search-btn:hover {
-	background-color: #ff7043;
+.search-container input {
+    width: 300px;
+}
+
+.search-container button {
+    background-color: #ff8c42;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    width: 100px;
+}
+
+.search-container button:hover {
+    background-color: #ff7043;
+}
+
+.search-container .new-post-btn {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #ff8c42;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 63px;
+    text-align: center;
+    margin-left: 195px;
+}
+
+.search-container .new-post-btn:hover {
+    background-color: #ff7043;
+    transform: translateY(-3px); /* Hover 효과로 위로 살짝 떠오르게 */
 }
 
 @media ( max-width : 768px) {
@@ -264,6 +280,17 @@
     color: #aaa;
     cursor: not-allowed;
 }
+.categoryName {
+    text-decoration: none;
+    font-size: 24px;
+    font-family: "Gothic A1", serif;
+    font-weight: 600;
+    font-style: normal;
+    color: #000;
+}
+.categoryNameDiv{
+	margin-top: 20px;
+}
 </style>
 <script src="https://kit.fontawesome.com/adad881590.js"
 	crossorigin="anonymous"></script>
@@ -308,12 +335,40 @@
 		<div class="content">
 			<img class="main-image" src="/resources/img/communityMain.png"
 				alt="Main Content Image">
-
+			<div class="categoryNameDiv">
+			<c:choose>
+			    <c:when test="${empty categoryName}">
+			        <a class="categoryName">전체 게시판</a>
+			    </c:when>
+			    <c:otherwise>
+			        <a class="categoryName">${categoryName}</a>
+			    </c:otherwise>
+			</c:choose>
+			</div>
 			<div class="search-container">
-				<input type="text" id="searchInput" placeholder="검색어를 입력하세요" class="search-input" oninput="filterProducts()">
-				<a href="/community/writeForm" class="new-post-btn">글쓰기</a>
+			    <!-- 메인 카테고리 -->
+			    <select id="mainCategory" name="mainCategory" onchange="loadSubCategories(this.value)">
+			        <option value="0">전체 카테고리</option>
+			        <c:forEach var="mainCategory" items="${categories.keySet()}">
+			            <option value="${mainCategory}">${mainCategory}</option>
+			        </c:forEach>
+			    </select>
+			
+			    <!-- 서브 카테고리 -->
+			    <select id="subCategory" name="subCategory" disabled>
+			        <option value="0">서브 카테고리 선택</option>
+			    </select>
+			
+			    <!-- 검색어 입력 -->
+			    <input type="text" id="keyword" name="keyword" placeholder="검색어를 입력하세요" class="search-input">
+			
+			    <!-- 검색 버튼 -->
+			    <button type="button" onclick="search()">검색</button>
+			    
+			    <a href="/community/writeForm" class="new-post-btn">글쓰기</a>
 			</div>
 
+			
 			<table class="board-table">
 				<thead>
 					<tr>
@@ -339,10 +394,8 @@
 			<div class="pagination">
 				<c:choose>
 					<c:when test="${page > 1}">
-						<a
-							href="/community/communityForm?categoryId=${param.categoryId}&page=1">&lt;&lt;</a>
-						<a
-							href="/community/communityForm?categoryId=${param.categoryId}&page=${page - 1}">&lt;</a>
+						<a href="/community/communityForm?categoryId=${param.categoryId}&page=1&mainCategory=${param.mainCategory}&keyword=${param.keyword}">&lt;&lt;</a>
+						<a href="/community/communityForm?categoryId=${param.categoryId}&page=${page - 1}&mainCategory=${param.mainCategory}&keyword=${param.keyword}">&lt;</a>
 					</c:when>
 					<c:otherwise>
 						<span>&lt;&lt;</span>
@@ -372,8 +425,7 @@
 							<span class="current">${i}</span>
 						</c:when>
 						<c:otherwise>
-							<a
-								href="/community/communityForm?categoryId=${param.categoryId}&page=${i}">${i}</a>
+							<a href="/community/communityForm?categoryId=${param.categoryId}&page=${i}&mainCategory=${param.mainCategory}&keyword=${param.keyword}">${i}</a>
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
@@ -382,9 +434,9 @@
 				<c:choose>
 					<c:when test="${page < pageCnt}">
 						<a
-							href="/community/communityForm?categoryId=${param.categoryId}&page=${page + 1}">&gt;</a>
+							href="/community/communityForm?categoryId=${param.categoryId}&page=${page + 1}&mainCategory=${param.mainCategory}&keyword=${param.keyword}">&gt;</a>
 						<a
-							href="/community/communityForm?categoryId=${param.categoryId}&page=${pageCnt}">&gt;&gt;</a>
+							href="/community/communityForm?categoryId=${param.categoryId}&page=${pageCnt}&mainCategory=${param.mainCategory}&keyword=${param.keyword}">&gt;&gt;</a>
 					</c:when>
 					<c:otherwise>
 						<span>&gt;</span>
@@ -396,11 +448,13 @@
 		</div>
 
 	</div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
     // 페이지 로드 시 상대 시간 계산
     document.addEventListener("DOMContentLoaded", function () {
         const timeElements = document.querySelectorAll(".relative-time");
-
+        const mainCategory = document.querySelector("mainCategory");
+        const subCategorySelect = document.getElementById('subCategory');
         // 현재 시간을 기준으로 상대 시간 계산 함수
         const formatRelativeTime = (dateString) => {
             const now = new Date();
@@ -426,21 +480,44 @@
             const regDate = element.getAttribute("data-regdate");
             element.textContent = formatRelativeTime(regDate);
         });
+       
     });
     
-    function filterProducts() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const items = document.querySelectorAll('.board-item');
-        // 제품 필터링
-        	items.forEach(item => {
-                const title = item.getAttribute('data-title').toLowerCase();
-                if (title.includes(searchTerm)) {
-                    item.style.display = ''; // 검색어에 포함되면 표시
-                } else {
-                    item.style.display = 'none'; // 포함되지 않으면 숨김
-                }
-            });
+    
+    function loadSubCategories(mainCategory) {
+        const subCategory = document.getElementById("subCategory");
+        subCategory.disabled = true;
+        subCategory.innerHTML = '<option value="0">서브 카테고리 선택</option>';
+
+        if (mainCategory != 0) {
+            const url = new URL(`/community/subCategories`, window.location.origin);
+            url.searchParams.append("mainCategory", mainCategory);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    subCategory.disabled = false;
+                    data.forEach(sub => {
+                        subCategory.innerHTML += `<option value="\${sub.id}">\${sub.subCategory}</option>`;
+                    });
+                });
         }
+    }
+    
+    function search() {
+        const mainCategory = document.getElementById("mainCategory").value;
+        const subCategory = document.getElementById("subCategory").value;
+        const keyword = document.getElementById("keyword").value;
+
+        const params = new URLSearchParams({
+        	mainCategory: mainCategory,
+            categoryId: subCategory,
+            keyword: keyword
+        });
+
+        window.location.href = `/community/communityForm?\${params}`;
+    }
+    
 </script>
 </body>
 </html>

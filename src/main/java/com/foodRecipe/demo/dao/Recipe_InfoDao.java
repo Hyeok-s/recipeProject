@@ -26,7 +26,7 @@ public interface Recipe_InfoDao {
 	List<Recipe_Info> findRecipeInfoAndMainImage(int pageSize, int offset);
 
 	@Select("""
-			SELECT info.RCP_SEQ, info.RCP_NM, info.count, image.ATT_FILE_NO_MAIN, nutrition.INFO_WGT, nutrition.INFO_ENG, 
+			SELECT info.RCP_SEQ, info.RCP_NM,info.count, image.ATT_FILE_NO_MAIN, nutrition.INFO_WGT, nutrition.INFO_ENG, 
 			nutrition.INFO_CAR, nutrition.INFO_PRO, nutrition.INFO_FAT, nutrition.INFO_NA, tips.RCP_NA_TIP 
 				FROM Recipe_Info info INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ 
 				INNER JOIN recipe_nutrition nutrition ON info.RCP_SEQ = nutrition.RCP_SEQ 
@@ -40,7 +40,7 @@ public interface Recipe_InfoDao {
 
 	@Select("SELECT count(*) FROM Recipe_info")
 	int findTotalRecipeCount();
-
+	
 	@Select("""
 			SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, image.ATT_FILE_NO_MAIN FROM Recipe_Info info
 			INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ 
@@ -52,6 +52,7 @@ public interface Recipe_InfoDao {
 			LIMIT #{pageSize} OFFSET #{offset}
 			""")
 	List<Recipe_Info> searchRecipes(String query, String sort, int pageSize, int offset);
+
 	
 	@Select("""
 			SELECT count(*) FROM Recipe_info
@@ -61,4 +62,28 @@ public interface Recipe_InfoDao {
 
 	@Update("UPDATE Recipe_info SET count = count + 1 WHERE RCP_SEQ = #{RCP_SEQ}")
 	void incrementInfoCount(Integer RCP_SEQ);
+
+	@Select("""
+			<script>
+			    SELECT 
+			        info.RCP_SEQ,
+			        info.RCP_NM, 
+			        info.RCP_WAY2, 
+			        info.RCP_PAT2, 
+			        image.ATT_FILE_NO_MAIN
+			    FROM recipe_info AS info
+			    JOIN recipe_image AS image ON info.RCP_SEQ = image.RCP_SEQ
+			    JOIN recipe_ingredient AS ingredient ON info.RCP_SEQ = ingredient.RCP_SEQ
+			    WHERE
+			        <if test="ingredients != null and ingredients.size() > 0">
+			            <foreach item="ingredient" collection="ingredients" open="(" separator="OR" close=")">
+			                ingredient.RCP_PARTS_DTLS LIKE CONCAT('%', #{ingredient}, '%')
+			            </foreach>
+			        </if>
+			    GROUP BY info.RCP_SEQ
+			    HAVING COUNT(DISTINCT ingredient.RCP_PARTS_DTLS) >= 2
+         </script>
+		""")
+	List<Recipe_Info> findRecipesByIngredients(List<String> ingredients);
+	
 }

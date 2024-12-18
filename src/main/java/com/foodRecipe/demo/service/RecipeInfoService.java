@@ -1,5 +1,6 @@
 package com.foodRecipe.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -39,9 +40,13 @@ public class RecipeInfoService {
 	public int findTotalRecipeCountByQuery(String query) {
 		return recipeInfoDao.findTotalRecipeCountByQuery(query);
 	}
-
+	
 	public void incrementInfoCount(Integer RCP_SEQ) {
 		recipeInfoDao.incrementInfoCount(RCP_SEQ);
 		
+	}
+
+	public List<Recipe_Info> findRecipesByIngredients(List<String> ingredients) {
+		return recipeInfoDao.findRecipesByIngredients(ingredients);
 	}
 }
