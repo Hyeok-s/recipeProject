@@ -14,6 +14,7 @@ public class Recipe_Info {
     private String RCP_PAT2;
     private String HASH_TAG;
     private String ATT_FILE_NO_MAIN;
+    private boolean like = false;
     
     public Recipe_Info(Integer RCP_SEQ, String RCP_NM, String RCP_WAY2, String RCP_PAT2, String HASH_TAG) {
         this.RCP_SEQ = RCP_SEQ;

@@ -89,61 +89,6 @@ input[type="text"]:focus {
         outline: none;
     }
     
-
-.sort-options {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    font-size: 16px;
-    margin-right: 320px;
-}
-
-.sort-options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sort-options input[type="radio"] {
-    display: none; /* 기본 라디오 버튼 숨김 */
-}
-
-.sort-options label {
-    position: relative;
-    font-size: 16px;
-    padding-left: 30px; /* 체크 마크 공간 확보 */
-    cursor: pointer;
-    color: #d26d8e;
-    font-weight: bold;
-}
-
-.sort-options label::before {
-    content: ''; /* 기본 상태 */
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #ffc0cb;/* 테두리 색상 */
-    border-radius: 3px; /* 체크박스 형태 */
-    background-color: white;
-    transition: all 0.3s ease;
-}
-
-/* 체크된 상태 */
-.sort-options input[type="radio"]:checked + label::before {
-    background-color: #f080a9; /* 체크된 상태 배경색 */
-    border-color: #f080a9;
-    content: '✔'; /* 체크 마크 */
-    color: white; /* 체크 마크 색상 */
-    font-size: 14px;
-    text-align: center;
-    line-height: 20px; /* 체크 마크 정렬 */
-}
-
-.sort-options input[type="radio"]:checked + label {
-    color: #f080a9; /* 체크된 라벨 텍스트 색상 */
-}
 .heart-icon {
     position: absolute;
     top: 10px;
@@ -186,14 +131,6 @@ input[type="text"]:focus {
 			    <label for="searchQuery">검색</label>
 			    <input type="text" id="searchQuery" placeholder="검색어를 입력하세요" />
 		</div>
-	        <div class="sort-options">
-				<input type="radio" name="sortOption" id="latest" value="latest" checked />
-			    <label for="latest"> 최신순</label>
-			    <input type="radio" name="sortOption" id="popular" value="popular" />
-			    <label for="popular"> 인기순</label>
-			    <input type="radio" name="sortOption" id="oldest" value="oldest" />
-			    <label for="oldest"> 오래된순</label>
-			</div>
 	</div>
 	
 
@@ -213,7 +150,6 @@ input[type="text"]:focus {
 		const textElement = document.getElementById('animatedText');
 		const text = textElement.textContent;
 		const searchInput = document.getElementById("searchQuery");
-        const sortOptions = document.querySelectorAll('input[name="sortOption"]');
         const paginationContainer = document.querySelector(".pagination");
         const recipeContainer = document.querySelector(".image-grid");
 		textElement.textContent = '';
@@ -227,9 +163,8 @@ input[type="text"]:focus {
 		
 		function fetchRecipes(page = 1) {
             const query = searchInput.value;
-            const sort = document.querySelector('input[name="sortOption"]:checked').value;
 
-            fetch(`/recipe/search?page=\${page}&query=\${query}&sort=\${sort}`)
+            fetch(`/wishList/search?page=\${page}&query=\${query}`)
                 .then(response => response.json())
                 .then(data => {
                     renderRecipes(data.recipeInfos);
@@ -319,9 +254,6 @@ input[type="text"]:focus {
         }
         // 검색 이벤트
         searchInput.addEventListener("input", () => fetchRecipes());
-        sortOptions.forEach(option => {
-            option.addEventListener("change", () => fetchRecipes());
-        });
         // 초기 로드
         fetchRecipes();
         

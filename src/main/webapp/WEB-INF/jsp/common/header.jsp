@@ -95,7 +95,7 @@ header {
 <header>
 	<div class="header-top">
 	    <div class="header-auth">
-			<c:if test="${empty memberId or memberId == -1}">
+			<c:if test="${empty memberId or memberId == -1 or memberId == 0}">
 			    <a href="/member/loginForm">로그인</a>
 			    <a href="/member/signUpForm">회원가입</a>
 			</c:if>
@@ -111,8 +111,8 @@ header {
 		</div>
 
 		<div class="header-menu">
-			<a href="/recommend">오늘의 추천 메뉴</a> <a href="/wishlist">찜 항목</a> <a
-				href="/community/communityForm">메뉴 자랑</a> <a href="/test">문의하기</a>
+			<a href="/recommend">오늘의 추천 메뉴</a> <a href="/wishList/mainForm">찜 항목</a> <a
+				href="/community/communityForm">메뉴 자랑</a> <a href="/search/mainForm">분석하기</a>
 		</div>
 	</div>
 </header>

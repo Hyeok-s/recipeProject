@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -47,11 +48,12 @@ public class ImageController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
+        String uuidFilename = UUID.randomUUID().toString() + getFileExtension(file.getOriginalFilename());
         // 파일 데이터를 ByteArrayResource로 변환
         ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
             @Override
             public String getFilename() {
-                return file.getOriginalFilename();
+                return uuidFilename;
             }
         };
 
@@ -67,9 +69,8 @@ public class ImageController {
 
             String resultImageUrl = "/image/showImage?pic=" + responseBody.get("image_url");
             List<String> detectedLabels = (List<String>) responseBody.get("labels");
-            
             Map<String, Object> result = new HashMap<>();
-            if(detectedLabels == null && detectedLabels.isEmpty()) {
+            if(detectedLabels == null || detectedLabels.isEmpty()) {
             	result.put("result", 0);
             	result.put("message", "사진 내 인식된 재료가 없습니다.");
             }
@@ -78,6 +79,7 @@ public class ImageController {
             	if (recipeInfos.isEmpty()) {
                 	result.put("result", 1);
                     result.put("message", "해당 재료로 검색된 레시피가 없습니다.");
+                    result.put("detectedLabels", detectedLabels);
                 }
             	else {
                 	result.put("result", 2);
@@ -100,4 +102,11 @@ public class ImageController {
     	return new UrlResource("file:" + pic);
     }
 
+    private String getFileExtension(String originalFilename) {
+        int lastIndexOfDot = originalFilename.lastIndexOf(".");
+        if (lastIndexOfDot == -1) {
+            return ""; // 확장자가 없을 경우
+        }
+        return originalFilename.substring(lastIndexOfDot);
+    }
 }

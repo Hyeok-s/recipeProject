@@ -33,8 +33,8 @@ public class RecipeInfoService {
 		return recipeInfoDao.findTotalRecipeCount();
 	}
 	
-	public List<Recipe_Info> searchRecipes(String query, String sort, int pageSize, int offset) {
-		return recipeInfoDao.searchRecipes(query, sort, pageSize, offset);
+	public List<Recipe_Info> searchRecipes(String query, String sort, int pageSize, int offset, int memberId) {
+		return recipeInfoDao.searchRecipes(query, sort, pageSize, offset, memberId);
 	}
 	
 	public int findTotalRecipeCountByQuery(String query) {
@@ -48,5 +48,21 @@ public class RecipeInfoService {
 
 	public List<Recipe_Info> findRecipesByIngredients(List<String> ingredients) {
 		return recipeInfoDao.findRecipesByIngredients(ingredients);
+	}
+
+	public void delteWishList(int RCP_SEQ, int memberId) {
+		recipeInfoDao.delteWishList(RCP_SEQ, memberId);	
+	}
+
+	public void insertWishList(int RCP_SEQ, int memberId) {
+		recipeInfoDao.insertWishList(RCP_SEQ, memberId);
+	}
+
+	public List<Recipe_Info> searchWishListRecipes(String query, int pageSize, int offset, int memberId) {
+		return recipeInfoDao.searchWishListRecipes(query, pageSize, offset, memberId);
+	}
+
+	public int findTotalWishListRecipeCountByQuery(String query, int memberId) {
+		return recipeInfoDao.findTotalWishListRecipeCountByQuery(query, memberId);
 	}
 }

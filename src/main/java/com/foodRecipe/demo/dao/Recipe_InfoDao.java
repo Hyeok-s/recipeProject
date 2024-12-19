@@ -2,6 +2,7 @@ package com.foodRecipe.demo.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -42,8 +43,10 @@ public interface Recipe_InfoDao {
 	int findTotalRecipeCount();
 	
 	@Select("""
-			SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, image.ATT_FILE_NO_MAIN FROM Recipe_Info info
+			SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, 
+			image.ATT_FILE_NO_MAIN, IF(w.status = TRUE, TRUE, FALSE) AS `like` FROM Recipe_Info info
 			INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ 
+			LEFT JOIN wishList w ON info.RCP_SEQ = w.RCP_SEQ AND w.memberId = #{memberId}
 			WHERE (#{query} IS NULL OR info.RCP_NM LIKE CONCAT('%', #{query}, '%'))
 			ORDER BY 
 			    CASE WHEN #{sort} = 'latest' THEN info.RCP_SEQ END DESC,
@@ -51,7 +54,7 @@ public interface Recipe_InfoDao {
 			    CASE WHEN #{sort} = 'oldest' THEN info.RCP_SEQ END ASC
 			LIMIT #{pageSize} OFFSET #{offset}
 			""")
-	List<Recipe_Info> searchRecipes(String query, String sort, int pageSize, int offset);
+	List<Recipe_Info> searchRecipes(String query, String sort, int pageSize, int offset, int memberId);
 
 	
 	@Select("""
@@ -72,8 +75,8 @@ public interface Recipe_InfoDao {
 			        info.RCP_PAT2, 
 			        image.ATT_FILE_NO_MAIN
 			    FROM recipe_info AS info
-			    JOIN recipe_image AS image ON info.RCP_SEQ = image.RCP_SEQ
-			    JOIN recipe_ingredient AS ingredient ON info.RCP_SEQ = ingredient.RCP_SEQ
+			    INNER JOIN recipe_image AS image ON info.RCP_SEQ = image.RCP_SEQ
+			    INNER JOIN recipe_ingredient AS ingredient ON info.RCP_SEQ = ingredient.RCP_SEQ
 			    WHERE
 			        <if test="ingredients != null and ingredients.size() > 0">
 			            <foreach item="ingredient" collection="ingredients" open="(" separator="OR" close=")">
@@ -85,5 +88,27 @@ public interface Recipe_InfoDao {
          </script>
 		""")
 	List<Recipe_Info> findRecipesByIngredients(List<String> ingredients);
+
+	@Delete("DELETE FROM wishList WHERE RCP_SEQ = #{RCP_SEQ} AND memberId = #{memberId}")
+	void delteWishList(int RCP_SEQ, int memberId);
+
+	@Insert("INSERT INTO wishList(RCP_SEQ, memberId) VALUE(#{RCP_SEQ}, #{memberId})")
+	void insertWishList(int RCP_SEQ, int memberId);
+
 	
+	@Select("""
+			SELECT info.RCP_SEQ, info.RCP_NM, info.RCP_WAY2, info.RCP_PAT2, 
+			image.ATT_FILE_NO_MAIN, IF(w.status = TRUE, TRUE, FALSE) AS `like` FROM Recipe_Info info
+			INNER JOIN Recipe_image image ON info.RCP_SEQ = image.RCP_SEQ 
+			INNER JOIN wishList w ON info.RCP_SEQ = w.RCP_SEQ AND w.memberId = #{memberId}
+			WHERE (#{query} IS NULL OR info.RCP_NM LIKE CONCAT('%', #{query}, '%'))
+			LIMIT #{pageSize} OFFSET #{offset}
+			""")
+	List<Recipe_Info> searchWishListRecipes(String query, int pageSize, int offset, int memberId);
+
+	@Select("""
+			SELECT count(*) FROM Recipe_info info INNER JOIN wishList w ON info.RCP_SEQ = w.RCP_SEQ AND w.memberId = #{memberId}
+			WHERE (#{query} IS NULL OR RCP_NM LIKE CONCAT('%', #{query}, '%'))
+			""")
+	int findTotalWishListRecipeCountByQuery(String query, int memberId);	
 }
