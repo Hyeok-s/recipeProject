@@ -1,0 +1,314 @@
+body {
+	margin: 0;
+	font-family: 'Arial', sans-serif;
+}
+
+.mypageContainer {
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: linear-gradient(to bottom, #f9f6f2, #fff);
+	overflow: hidden;
+}
+
+.book {
+	position: relative;
+	width: 80%;
+	height: 70vh;
+	background: #fff;
+	display: flex;
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+	margin-top: -60px;
+}
+
+.book::before, .book::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	width: 20px;
+	height: 100%;
+	background: #e6e1d8;
+	box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.book::before {
+	left: -20px;
+	border-radius: 5px 0 0 5px;
+}
+
+.book::after {
+	right: -20px;
+	border-radius: 0 5px 5px 0;
+}
+
+.leftPage, .rightPage {
+	width: 50%;
+	height: 100%;
+	padding: 40px;
+	box-sizing: border-box;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.leftPage {
+	background: linear-gradient(to right, #f9f6f2, #fff 50%);
+	box-shadow: inset -5px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rightPage {
+	background: linear-gradient(to left, #f9f6f2, #fff 50%);
+	box-shadow: inset 5px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.pageContent {
+	text-align: center;
+	font-size: 1.5rem;
+	color: #5b4a3f;
+}
+
+.bookSpine {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 10px;
+	height: 100%;
+	background: #d9d3c3;
+	transform: translateX(-50%);
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+	z-index: 1;
+}
+
+.field {
+	margin-bottom: 25px;
+	display: flex;
+	align-items: center;
+	font-weight: bold;
+}
+
+.field span {
+	font-weight: bold;
+	margin-right: 10px;
+	min-width: 160px; /* 고정 너비 설정 */
+	text-align: left; /* 왼쪽 정렬 */
+}
+
+.field img {
+	display: block;
+	margin: 0 auto 20px auto; /* 이미지 가운데 정렬 */
+	max-width: 120px; /* 이미지 최대 너비 설정 */
+}
+
+.currentPassword {
+	letter-spacing: 5px;
+}
+
+.editBtn {
+	margin-top: 20px;
+	padding: 10px 20px;
+	background-color: #5b4a3f;
+	color: #fff;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+	border-radius: 5px;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 10;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content {
+	position: relative; /* 닫기 버튼의 상대적 위치 기준 설정 */
+	background-color: #fff;
+	padding: 25px;
+	border-radius: 10px;
+	text-align: center;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+	position: absolute;
+	top: -10px; /* 입력창 바로 위 */
+	right: -10px; /* 입력창 오른쪽 */
+	font-size: 20px;
+	cursor: pointer;
+	color: #aaa;
+	background: #fff; /* 닫기 버튼 배경 흰색 */
+	border-radius: 50%; /* 둥근 버튼 */
+	border: 1px solid #ccc;
+	width: 25px;
+	height: 25px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.close-btn:hover {
+	border-color: #555050;
+	color: #555050;
+}
+
+input:disabled {
+	style: none;
+	border: none; /* 테두리 제거 */
+	background-color: #f9f6f2; /* disabled 상태에서 배경색 */
+	color: #5b4a3f; /* disabled 상태에서 텍스트 색상 */
+	border: 1px solid #ccc; /* disabled 상태에서 경계선 색상 */
+}
+
+#passwordChkInputDiv {
+	margin-bottom: 0px;
+}
+
+input#passwordInput, input#passwordChkInput, input#nickNameInput {
+	width: 100%;
+	height: 28px;
+	font-size: 20px;
+	font-weight: bold;
+	color: #5b4a3f;
+}
+.rightPage{
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+.rightPageContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+	 width: 100%;
+}
+
+.section {
+    flex: 1;  /* 각 section이 남은 공간을 균등하게 나누도록 설정 */
+    padding: 20px;
+    padding-top: 0px;
+}
+
+
+.postSection table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.postSection th, .postSection td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.postSection th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+.postSection tbody {
+    display: block;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%; /* 가로 너비 맞추기 */
+}
+.postSection tbody tr {
+    display: table;
+    width: 99%;
+    table-layout: fixed; /* 테이블 셀 고정 */
+}
+.postSection td:nth-child(1) {
+    width: 70%; /* 첫 번째 열 너비를 50%로 설정 */
+    color: #5b4a3f;
+    font-weight: bold;
+}
+
+.postSection td:nth-child(1):hover {
+    background-color: #f1e5d8; /* 마우스를 올렸을 때 배경색 변화 */
+    color: #3e2c1c; /* 글자 색상 변경 */
+}
+
+.postSection td:nth-child(2) {
+    width: 14%; /* 두 번째 열 너비 */
+    text-align: center; /* 가운데 정렬 */
+    color: #5b4a3f;
+}
+
+.postSection td:nth-child(3) {
+    width: 14%; /* 세 번째 열 너비 */
+    text-align: right; /* 우측 정렬 */
+        color: #5b4a3f;
+}
+
+.memoContainer {
+    max-height: 220px; /* 메모 영역 전체 높이 제한 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    border: 1px solid #ddd; /* 테두리 추가 */
+    background-color: white; /* 배경색 */
+    padding: 10px; /* 내부 여백 */
+}
+
+.memoGroup {
+    border-bottom: 1px solid #ddd; /* 그룹 구분선 */
+    padding: 5px 0;
+}
+
+.memoHeader {
+    display: flex;
+    justify-content: space-between; /* 텍스트와 버튼 양쪽 배치 */
+    align-items: center;
+    background-color: #f4f4f4; /* 헤더 배경색 */
+    padding: 10px;
+    cursor: pointer; /* 클릭 가능한 커서 */
+    border: 1px solid #ddd;
+    height: 30px;
+    font-size: 20px;
+	font-family: "Gowun Batang", serif;
+ 	font-weight: 700;
+ 	font-style: normal;
+}
+
+.memoDetails {
+    display: block; /* 내부 콘텐츠를 블록으로 처리 */
+    max-height: 120px; /* 펼쳤을 때 세부 내용 스크롤 가능 */
+    overflow-y: auto; /* 세부 항목 스크롤 활성화 */
+    margin-top: 5px;
+    padding: 5px;
+    border: 1px solid #ddd; /* 세부 항목 테두리 */
+    background-color: #fafafa;
+    font-size: 14px; /* 글자 크기 조정 */
+    line-height: 1.4;
+}
+
+.memoItem {
+	border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    line-height: 2.6;
+    height: 30px;
+}
+.memoItem:hover {
+    background-color: #f1e5d8; /* 배경색을 살짝 밝게 */
+    color: #3542fd; /* 글자색을 더 어두운 색으로 변경 */
+}
+.toggleButton{
+	background-color: #5b4a3f;
+	color: #fff;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+	border-radius: 5px;
+}
+.memoSection{
+	padding-bottom: 0px;
+}
+.manual{
+	text-decoration-line: none;
+}

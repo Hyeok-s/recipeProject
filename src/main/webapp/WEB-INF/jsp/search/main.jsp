@@ -8,158 +8,11 @@
 	href="https://fonts.googleapis.com/css2?family=Diphylleia&family=Do+Hyeon&family=Gothic+A1&family=Nanum+Gothic+Coding&display=swap"
 	rel="stylesheet">
 <head>
+<link rel="stylesheet" href="/resources/css/searchMain.css" />
 <link rel="stylesheet" href="/resources/css/main.css" />
-<style>
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	padding: 20px;
-	margin: 0 auto;
-	background-color: #f0f8ff;
-	margin-top: 20px;
-}
-
-.upload-instruction {
-	font-size: 14px;
-	color: #555;
-	margin-bottom: 20px;
-}
-
-.upload-section {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.file-drop-area {
-	flex: 1;
-	padding: 15px;
-	border: 2px dashed #ccc;
-	border-radius: 10px;
-	text-align: center;
-	background-color: #f0f0f0;
-	color: #777;
-	cursor: pointer;
-	transition: background-color 0.3s, border-color 0.3s;
-}
-
-.file-drop-area:hover {
-	border-color: #007BFF;
-	color: #333;
-}
-
-.file-drop-area input[type="file"] {
-	display: none;
-}
-
-.upload-button {
-	padding: 15px 20px;
-	background-color: #007BFF;
-	color: white;
-	border: none;
-	border-radius: 10px;
-	cursor: pointer;
-	font-size: 17px;
-	transition: background-color 0.3s;
-	margin-left: 15px;
-	font-weight: bold;
-}
-
-.upload-button:hover {
-	background-color: #0056b3;
-}
-
-.display-section {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	max-width: 1000px;
-	margin-top: 20px;
-}
-
-.image-box {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 80%;
-	height: 300px;
-	border: 1px dashed #ccc;
-	position: relative;
-	margin-left: 30px;
-    margin-right: 30px;
-}
-
-.image-box img {
-	width: 500px;
-	max-width: 100%;
-	max-height: 100%;
-	display: none;
-}
-
-.arrow {
-	font-size: 45px;
-	color: #666;
-	font-weight: bold;
-}
-
-#detectedLabels {
-	margin-top: 20px;
-}
-
-.detected-labels-title {
-	font-size: 20px;
-	font-weight: bold;
-	color: #333;
-	margin-bottom: 10px;
-}
-
-.detected-labels {
-	display: flex;
-	flex-wrap: wrap;
-}
-
-.label-item {
-	background-color: #f0f0f0;
-	padding: 8px;
-	margin-right: 10px;
-	border-radius: 5px;
-	font-size: 16px;
-	color: #333;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.spinner {
-	border: 4px solid #f3f3f3;
-	border-top: 4px solid #007BFF;
-	border-radius: 50%;
-	width: 30px;
-	height: 30px;
-	animation: spin 1s linear infinite;
-	margin: 50px auto;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-.loading-message {
-	text-align: center;
-	font-size: 28px;
-	color: #666;
-	margin-top: 90px;
-}
-
-.image-grid-container {
-	display: block;
-}
-</style>
 <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.22/dist/full.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/common/header.jsp"%>
@@ -202,7 +55,7 @@
 		<div class="detected-labels" id="detectedLabels"></div>
 
 	</div>
-	<div class="image-grid-container">
+	<div class="image-grid-container" style="display: block !important;">
 		<!-- 안내 문구 -->
 		<div class="loading-message" id="loadingMessage">이 부분에 분석 결과가
 			표시됩니다.</div>
@@ -210,7 +63,7 @@
 		<div class="spinner" id="spinner"></div>
 		<div class="image-grid"></div>
 	</div>
-
+		<%@ include file="/WEB-INF/jsp/common/footer.jsp"%>
 	<script>
     // 이미지 선택 시 미리보기 표시
     function previewImage(event) {

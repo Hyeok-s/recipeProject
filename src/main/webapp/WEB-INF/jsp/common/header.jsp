@@ -7,90 +7,7 @@
 	href="https://fonts.googleapis.com/css2?family=Diphylleia&family=Do+Hyeon&family=Gothic+A1&display=swap"
 	rel="stylesheet">
 
-<style>
-header {
-	max-width: 1650px;
-	margin: 0 auto;
-	padding: 10px 0;
-	display: flex;
-	flex-direction: column;
-}
-
-.header-top {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	padding: 0 20px;
-}
-
-.header-auth {
-	display: flex;
-	gap: 15px;
-}
-
-.header-auth a {
-	text-decoration: none;
-	color: #007bff;
-	font-size: 14px;
-	font-weight: bold;
-	transition: color 0.3s ease;
-}
-
-.header-auth a:hover {
-	color: #0056b3;
-}
-
-
-.header-bottom {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-right: 240px;
-	margin-left: 240px;
-}
-
-
-.header-logo {
-	display: flex;
-	align-items: center;
-}
-
-.header-logo img {
-	width: 170px;
-	height: auto;
-	margin-right: 15px;
-}
-
-.header-logo h1 {
-	font-size: 24px;
-	font-weight: bold;
-	margin: 0;
-	color: #333;
-}
-
-
-.header-menu {
-	display: flex;
-	gap: 20px;
-}
-
-.header-menu a {
-	text-decoration: none;
-	color: #333;
-	padding: 5px 10px;
-	border-radius: 5px;
-	transition: background-color 0.3s ease;
-	font-family: "Diphylleia", serif;
-	font-weight: 400;
-	font-style: normal;
-	font-size: 28px;
-	
-}
-
-.header-menu a:hover {
-	background-color: #e9ecef;
-}
-</style>
+<link rel="stylesheet" href="/resources/css/header.css" />
 
 <header>
 	<div class="header-top">
@@ -111,7 +28,7 @@ header {
 		</div>
 
 		<div class="header-menu">
-			<a href="/recommend">오늘의 추천 메뉴</a> <a href="/wishList/mainForm">찜 항목</a> <a
+			<a href="#">오늘의 추천 메뉴</a> <a href="/wishList/mainForm">찜 항목</a> <a
 				href="/community/communityForm">메뉴 자랑</a> <a href="/search/mainForm">분석하기</a>
 		</div>
 	</div>

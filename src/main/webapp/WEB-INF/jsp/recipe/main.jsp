@@ -10,161 +10,9 @@
 	rel="stylesheet">
 <head>
 <link rel="stylesheet" href="/resources/css/main.css" />
-
-<style>
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-    gap: 10px;
-}
-
-.pagination a,
-.pagination span {
-    padding: 10px 15px;
-    border: 1px solid #ddd;
-    text-decoration: none;
-    color: #333;
-    border-radius: 5px;
-}
-
-.pagination a:hover {
-    background-color: #f0f0f0;
-}
-
-.pagination .current {
-    background-color: #ff8c42;
-    color: white;
-    font-weight: bold;
-    cursor: default;
-}
-
-.pagination .disabled {
-    color: #aaa;
-    cursor: not-allowed;
-}
-
-.search-container {
-        display: flex;
-        justify-content: center;
-        padding-top: 20px;
-        padding-bottom: 20px;
-        background-color: #fef5f8;
-        border: 2px solid #ffc0cb;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-family: 'Arial', sans-serif;
-        max-width: 1650px;
-        margin: 20px auto;
-    }
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex: 1;
-    margin-left: 320px;
-}
-
-label {
-    font-size: 20px;
-    color: #d26d8e;
-    font-weight: bold;
-}
-
-input[type="text"] {
-        padding: 12px 18px;
-        font-size: 16px;
-        border: 2px solid #ffc0cb;
-        border-radius: 8px;
-        background-color: #fff;
-        color: #333;
-        width: 100%;
-        max-width: 500px;
-        box-sizing: border-box;
-    }
-
-input[type="text"]:focus {
-        border-color: #f080a9;
-        outline: none;
-    }
-    
-
-.sort-options {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    font-size: 16px;
-    margin-right: 320px;
-}
-
-.sort-options label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sort-options input[type="radio"] {
-    display: none; /* 기본 라디오 버튼 숨김 */
-}
-
-.sort-options label {
-    position: relative;
-    font-size: 16px;
-    padding-left: 30px; /* 체크 마크 공간 확보 */
-    cursor: pointer;
-    color: #d26d8e;
-    font-weight: bold;
-}
-
-.sort-options label::before {
-    content: ''; /* 기본 상태 */
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #ffc0cb;/* 테두리 색상 */
-    border-radius: 3px; /* 체크박스 형태 */
-    background-color: white;
-    transition: all 0.3s ease;
-}
-
-/* 체크된 상태 */
-.sort-options input[type="radio"]:checked + label::before {
-    background-color: #f080a9; /* 체크된 상태 배경색 */
-    border-color: #f080a9;
-    content: '✔'; /* 체크 마크 */
-    color: white; /* 체크 마크 색상 */
-    font-size: 14px;
-    text-align: center;
-    line-height: 20px; /* 체크 마크 정렬 */
-}
-
-.sort-options input[type="radio"]:checked + label {
-    color: #f080a9; /* 체크된 라벨 텍스트 색상 */
-}
-.heart-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    color: #f96a6a;
-    background-color: rgba(0, 0, 0, 0.5); /* 배경을 반투명하게 */
-    padding: 4px;
-    padding-bottom: 1.4px;
-    border-radius: 90%;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-.heart-icon:hover {
-    color: #ff4081; /* hover 시 색상 변화 */
-}
-
-
-</style>
 <script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.22/dist/full.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/common/header.jsp"%>
@@ -208,6 +56,7 @@ input[type="text"]:focus {
 	
 	<div class="pagination">
 	</div>
+		<%@ include file="/WEB-INF/jsp/common/footer.jsp"%>
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
 		const textElement = document.getElementById('animatedText');

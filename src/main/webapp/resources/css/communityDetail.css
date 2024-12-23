@@ -1,0 +1,267 @@
+/* 전체 컨테이너 */
+.container {
+	display: flex;
+	max-width: 1700px;
+	margin: 30px auto;
+	overflow: hidden;
+	gap: 40px;
+}
+
+/* 카테고리 메뉴 */
+.sidebar {
+	width: 15%; /* 너비 약간 증가 */
+	padding: 20px;
+	padding-top: 90px;
+}
+
+.mainCategory {
+	border-top: 3.3px solid #eea3aa;
+	border-bottom: 2px solid #e5e5e5;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.sidebar ul {
+	list-style: none;
+	padding: 0;
+}
+
+.sidebar ul li {
+	margin-bottom: 15px;
+}
+
+/* 메인 카테고리 스타일 */
+.sidebar ul li>a {
+	text-decoration: none;
+	font-size: 24px;
+	font-family: "Gothic A1", serif;
+	font-weight: 600;
+	font-style: normal;
+	color: #000;
+}
+
+.sidebar ul li div>a {
+	text-decoration: none;
+	font-size: 20px;
+	color: #000;
+	font-family: "Gothic A1", serif;
+	font-weight: 600;
+	font-style: normal;
+}
+
+.sidebar ul li>a:hover {
+	color: #ff7043;
+}
+
+.sidebar ul ul {
+	padding-left: 20px;
+	margin-top: 10px;
+}
+
+.sidebar ul ul li>a {
+	text-decoration: none;
+	font-size: 16px;
+	color: #000;
+	font-weight: normal;
+}
+
+.sidebar ul ul li>a:hover {
+	color: #ff5722;
+}
+
+@media ( max-width : 768px) {
+	.container {
+		flex-direction: column;
+	}
+	.sidebar {
+		width: 100%;
+		box-shadow: none;
+		padding: 15px;
+	}
+	.content {
+		width: 100%;
+		padding: 15px;
+	}
+}
+
+.content {
+	width: 65%;
+	margin: 0 auto;
+	background: #fff;
+	padding: 20px;
+	margin-top: 100px;
+	height: auto;
+}
+
+.post-title {
+	font-size: 2rem;
+	margin-bottom: 10px;
+}
+
+.post-meta {
+	font-size: 0.9rem;
+	color: #555;
+	margin-bottom: 20px;
+}
+
+.post-meta span {
+	margin-right: 15px;
+}
+
+.post-body {
+	font-size: 1rem;
+	margin-bottom: 20px;
+}
+
+.comment-section {
+	margin-top: 40px;
+}
+
+.comment-list {
+	list-style: none;
+	padding: 0;
+}
+
+.comment-item {
+	border-bottom: 1px solid #ccc;
+	padding: 15px 0;
+	 display: flex;
+	flex-direction: column;  /* 세로로 정렬 */
+    align-items: flex-start;  /* 기본 왼쪽 정렬 */
+}
+
+.comment-actions {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+}
+
+.comment-meta {
+	font-size: 0.9rem;
+	color: #666;
+	width: 100%;
+}
+
+.comment-form {
+	display: flex;
+	align-items: stretch;
+	margin-top: 20px;
+}
+
+.comment-input {
+	resize: none;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 10px;
+	margin-bottom: 0;
+	flex-grow: 1;
+}
+
+.btn {
+	padding: 10px 15px;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: center;
+}
+
+.submit-btn {
+	padding: 10px 15px;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+	text-decoration: none;
+	text-align: center;
+	background-color: #007bff;
+}
+
+.back-btn {
+	background-color: #007bff; /* 파란색 */
+}
+
+.edit-btn {
+	background-color: #28a745; /* 초록색 */
+}
+
+.delete-btn {
+	background-color: #dc3545; /* 빨간색 */
+}
+
+@media ( max-width : 600px) {
+	.content {
+		padding: 10px;
+	}
+	.post-title {
+		font-size: 1.5rem;
+	}
+	.comment-input {
+		height: 80px;
+	}
+	.comment-actions a {
+		font-size: 0.8rem;
+		padding: 4px 8px;
+	}
+	.comment-edit-input {
+		font-size: 0.9rem;
+	}
+}
+.comment-edit-input {
+	resize: none;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-bottom: 10px;
+	margin-bottom: 0;
+	flex-grow: 1;
+	width: 84%;
+}
+
+/* 댓글 버튼 스타일 */
+.comment-actions a {
+	padding: 5px 5px;
+	text-decoration: none;
+	border-radius: 5px;
+	font-size: 0.9rem;
+	color: #5a5252;
+	transition: background-color 0.3s, transform 0.2s;
+	font-family: "Gothic A1", sans-serif;
+	font-weight: bold;
+}
+
+
+.comment-actions .save-comment {
+	background-color: #28a745; /* 초록색 */
+	margin-top: 10px;
+}
+
+.comment-top{
+	display: flex;
+	width: 100%;
+}
+.save-comment{
+	padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    background-color: #007bff;
+}
+.post-actions{
+	float: right;
+}
+.post-actions a{
+	padding: 5px 5px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #5a5252;
+    transition: background-color 0.3s, transform 0.2s;
+    font-family: "Gothic A1", sans-serif;
+    font-weight: bold;
+}

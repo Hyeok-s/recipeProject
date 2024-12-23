@@ -71,7 +71,6 @@ public class HomeController {
 	    int RCP_SEQ = (int) request.get("recipeId");
 	    int memberId = (int) session.getAttribute("memberId");
 	    boolean like = (boolean) request.get("like");
-    	System.out.println(like);
 	    
 	    if(!like) {
 	    	recipeInfoService.delteWishList(RCP_SEQ, memberId);

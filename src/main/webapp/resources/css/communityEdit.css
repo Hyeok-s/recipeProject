@@ -1,0 +1,109 @@
+/* 동일한 스타일 적용 */
+.container {
+    display: flex;
+    max-width: 1700px;
+    margin: 30px auto;
+    overflow: hidden;
+    gap: 40px;
+}
+
+.sidebar {
+    width: 15%;
+    padding: 20px;
+    padding-top: 90px;
+}
+
+.mainCategory {
+    border-top: 3.3px solid #eea3aa;
+    border-bottom: 2px solid #e5e5e5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 15px;
+}
+
+.sidebar ul li>a {
+    text-decoration: none;
+    font-size: 24px;
+    font-family: "Gothic A1", serif;
+    font-weight: 600;
+    font-style: normal;
+    color: #000;
+}
+
+.sidebar ul li div>a {
+    text-decoration: none;
+    font-size: 20px;
+    color: #000;
+    font-family: "Gothic A1", serif;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.sidebar ul li>a:hover {
+    color: #ff7043;
+}
+
+.sidebar ul ul {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.sidebar ul ul li>a {
+    text-decoration: none;
+    font-size: 16px;
+    color: #000;
+    font-weight: normal;
+}
+
+.sidebar ul ul li>a:hover {
+    color: #ff5722;
+}
+
+@media ( max-width : 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        box-shadow: none;
+        padding: 15px;
+    }
+    .content {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+.form-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.input-title {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.submit-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}

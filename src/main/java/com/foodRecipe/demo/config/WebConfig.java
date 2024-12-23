@@ -25,6 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
         
         registry.addInterceptor(logoutInterceptor)
         .addPathPatterns("/member/logout", "/community/addComment", "/community/writeForm", 
-        		"/community/write", "/community/deleteComment", "/community/editComment");
+        		"/community/write", "/community/deleteComment", "/community/editComment", "/recipe/saveMemo", "/like/toggle", "/wishList/mainForm");
     }
 }

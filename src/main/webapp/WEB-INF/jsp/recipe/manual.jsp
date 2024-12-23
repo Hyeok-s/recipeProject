@@ -8,507 +8,26 @@
 <link
 	href="https://fonts.googleapis.com/css2?family=Lobster&family=Diphylleia&family=Do+Hyeon&family=Gothic+A1&family=Gowun+Batang&family=Nanum+Gothic+Coding&display=swap"
 	rel="stylesheet">
-	
 <head>
+<link rel="stylesheet" href="/resources/css/manual.css" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recipe Book</title>
-<style>
-body {
-	margin-top: 8px;
-	margin-left: 0px;
-	margin-right: 0px;
-	margin-bottom: 0px;
-}
-
-.bookBody {
-	margin-top: 20px;
-	background: #f7f2e9;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-}
-
-.book-cover {
-	position: relative;
-	width: 80%;
-	max-width: 1420px;
-	height: 700px;
-	background: linear-gradient(145deg, #e0d8c4, #fff);
-	border-radius: 15px;
-	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	text-align: center;
-	padding: 30px;
-}
-
-.book-cover::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 50%;
-	width: 2px;
-	height: 100%;
-	background: #ccc;
-	box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1), 2px 0 5px rgba(0, 0, 0, 0.1);
-	z-index: 1;
-}
-
-.book-image {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	z-index: 2;
-}
-
-.book-image img {
-	max-width: 320px;
-	width: 320px;
-	height: auto;
-	border-radius: 50%;
-	object-fit: cover;
-	position: absolute;
-}
-
-.book-title {
-	position: absolute;
-	font-size: 48px;
-	margin: 0;
-	color: #6a553e;
-	font-family: "Gowun Batang", serif;
-	font-weight: 700;
-	font-style: normal;
-	top: -120px;
-}
-
-.left-image {
-	position: absolute;
-	left: 0;
-	width: 50%;
-	height: 100%;
-	justify-content: center;
-	align-items: center;
-}
-
-.left-image img {
-	max-width: 300px;
-	border-radius: 10px;
-}
-
-.ingredients {
-	padding: 20px;
-}
-
-.ingredients li {
-	margin-bottom: 5px;
-	font-size: 20px;
-	line-height: 1.6;
-	color: #6a553e;
-	padding-left: 15px;
-	position: relative;
-	list-style: none;
-	font-weight: bold;
-}
-
-.ingredients li::before {
-	content: "✔";
-	position: absolute;
-	left: 0;
-	font-size: 14px;
-	color: #6a994e;
-}
-
-.right-page {
-	position: absolute;
-	right: 0;
-	top: 0;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-align: left;
-	width: 50%;
-}
-
-.nutrition-info {
-	width: 80%;
-	padding: 20px;
-	background: #faf8f2;
-	border-radius: 15px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-	font-family: 'Nanum Gothic Coding', monospace;
-	color: #444;
-}
-
-.nutrition-info h2 {
-	font-weight: bold;
-	margin-bottom: 20px;
-	color: #6a553e;
-	border-bottom: 2px solid #e0d8c4;
-	padding-bottom: 10px;
-}
-
-.info-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 10px 15px;
-	margin-bottom: 12px;
-	font-size: 18px;
-	color: #5a5a5a;
-	border-radius: 8px;
-	background: #ffffff;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.info-item:last-child {
-	margin-bottom: 0;
-}
-
-.info-item span:first-child {
-	font-weight: bold;
-	color: #6a553e;
-}
-
-.info-item span:last-child {
-	font-weight: bold;
-	color: #52734d;
-}
-
-.nutrition {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	top: 170px;
-}
-
-.nutrition img {
-	margin: 0 auto;
-	max-width: 450px;
-	width: 450px;
-	height: auto;
-	margin-bottom: 20px;
-}
-
-.ingredients-title {
-	font-family: "Do Hyeon", serif;
-	font-size: 30px;
-	color: #5c4c3b;
-	margin-top: 10px;
-	line-height: 1.5;
-	padding-left: 30px;
-	padding-right: 30px;
-}
-/* 애니메이션 키프레임 */
-@keyframes pageFlip {
-    0% {
-        transform: rotateY(0deg);
-        opacity: 1;
-    }
-    50% {
-        transform: rotateY(-90deg);
-        opacity: 0.5;
-    }
-    100% {
-        transform: rotateY(-180deg);
-        opacity: 1;
-    }
-}
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-.flipping .left-image {
-    animation: fadeOut 1s ease-in-out forwards;
-    z-index: 1; /* 오른쪽 페이지 뒤로 들어가도록 조정 */
-     opacity: 0;
-}
-
-.right-page {
-    transform-origin: left; /* 왼쪽을 기준으로 회전 */
-    transform: rotateY(0deg);
-    transition: transform 1s ease-in-out;
-    backface-visibility: hidden;
     
-}
-
-.flipping .right-page {
-    animation: pageFlip 1s ease-in-out forwards;
-    z-index: 2; /* 오른쪽 페이지가 왼쪽 페이지를 덮도록 설정 */
-}
-
-@keyframes fadeOutImage {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5; /* 반투명 상태 */
-    }
-    100% {
-        opacity: 0; /* 완전히 사라짐 */
-    }
-}
-
-.fade-out-image {
-    animation: fadeOutImage 1s ease-in-out forwards; /* 이미지 사라지는 애니메이션 */
-}
-.next-button {
-    position: absolute;
-    right: -28%;
-    background-color: transparent;
-    border-radius: 50%;
-    font-size: 120px;
-    color: #6a553e;
-    z-index: 3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-style: none;
-    animation: pulse 2s infinite; /* 애니메이션 추가 */
-    transition: transform 0.2s ease; /* 클릭 시 부드러운 반응 */
-}
-
-.next-button::after {
-    content: ">";
-    background: linear-gradient(90deg, transparent, #6a553e, transparent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradient-flicker 1.5s infinite; /* 텍스트 빈 부분 애니메이션 */
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-}
-
-.fa-solid{
-	padding: 26px;
-}
-.microphone {
+<script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
+<style>
+.question {
     position: absolute;
     top: 10px;
-    right: 65px;
-    font-size: 24px;
+    right: 174px;
+    font-size: 25px;
     color: #6a553e;
     cursor: pointer;
     z-index: 10;
     align-items: center;
     display: inline-flex;
-}
-
-.dot {
- position: absolute;
- top: 50%;
- left: 26%;
- transform: translate(-50%, -50%);
-  color: #6a553e;
-  font-size: 0.4em;
-  }
-  
-.volume {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 24px;
-  color: red;
-  cursor: pointer;
-  z-index: 10;
-  align-items: center;
-  display: inline-flex;   
-}
-
-.fa-volume-xmark{
-	color: #6a553e;
-}
-
-.before-button {
-    position: absolute;
-    left: -14%;
-    background-color: transparent;
-    border-radius: 50%;
-    font-size: 120px;
-    color: #6a553e;
-    z-index: 3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-style: none;
-    animation: pulse 2s infinite;
-    transition: transform 0.2s ease;
-}
-
-.before-button::after {
-    content: "<";
-    background: linear-gradient(90deg, transparent, #6a553e, transparent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradient-flicker 1.5s infinite; /* 텍스트 빈 부분 애니메이션 */
-}
-
-
-.reverse-flipping .right-page {
-    animation: pageFlipReverse 1s ease-in-out forwards; /* 역방향 덮는 애니메이션 */
-    z-index: 2; /* 왼쪽 페이지 위로 올라오게 설정 */
-}
-.reverse-flipping .left-image {
-    animation: fadeOutImage 1s ease-in-out reverse; /* 다시 나타나는 효과 */
-    z-index: 1; /* 오른쪽 페이지 아래로 이동 */
-    opacity: 1;
-}
-@keyframes pageFlipReverse {
-    0% {
-        transform: rotateY(-180deg);
-        opacity: 1;
     }
-    50% {
-        transform: rotateY(-90deg);
-        opacity: 0.6; /* 약간 더 투명 */
-    }
-    100% {
-        transform: rotateY(0deg);
-        opacity: 1;
-    }
-}
-.fade-out-before-button {
-    animation: fadeOutBefore 1s ease-in-out forwards;
-}
-
-.step {
-  position: absolute;
-  top: 27px;
-  left: 30px;
-  font-size: 35px;
-  color: #5c4c3b;
-  cursor: pointer;
-  z-index: 10;
-  align-items: center;
-  display: inline-flex;   
-  font-weight: bold;
-  border: 2px solid #5c4c3b;
-  border-radius: 50%;
-  padding: 0px 17px;
-}
-
-.memo {
-	left: 27px;
-   	width: 90%;
-    height: calc(90% - 40px);
-    padding: 10px;
-    background-color: #fff;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-  }
-
-.memo textarea {
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    resize: none;
-    padding: 10px;
-    font-size: 16px;
-    font-family: 'Courier New', Courier, monospace;
-    line-height: 1.7;
-    background: repeating-linear-gradient(
-      white, white 29px, #f0f0f0 30px, #f0f0f0 31px);
-    color: #333;
-  }
-  
-.memo textarea::placeholder {
-  color: #aaa;
-  font-style: italic;
-}
-.memoUp {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-	margin-right: 20px;
-    margin-left: 20px;
-}
-
-.memoUp button {
-  padding: 5px 10px;
-  font-size: 20px;
-  color: #fff;
-  background-color: #6a553e;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.memoUp button:hover {
-  background-color: #0056b3;
-}
-.memoTitle{
-  font-size: 30px;
-  font-family: "Lobster", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.timer{
-	position: absolute;
-    top: 10px;
-    right: 127px;
-    font-size: 24px;
-    color: #6a553e;
-    cursor: pointer;
-    z-index: 10;
-}
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    background: white;
-    border: 1px solid #ccc;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.hidden {
-    display: none;
-}
-.timer-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  border: 1px solid #ccc;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-}
 </style>
-
-    
-<script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/common/header.jsp"%>
@@ -535,6 +54,8 @@ body {
   				<span class="dot">●</span>
 			</i>
 			<i class="fa-solid fa-volume-high volume"></i>
+			<i class="fa-solid fa-question question"></i>
+			
 			<span class="step">${step}</span>
 				<div class="nutrition">
 					<img src="${manual.MANUAL_IMG}" alt="manual Image" />
@@ -555,6 +76,18 @@ body {
   <button id="startTimerButton">타이머 시작</button>
   <button id="closeTimerPopup">닫기</button>
 </div>
+
+<div id="customAlert" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+    <p>타이머가 종료되었습니다!</p>
+    <button id="confirmButton">확인</button>
+</div>
+<div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+	<!-- 팝업 창 -->
+<div id="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+    <img id="popupImage" src="/resources/img/help2.png" alt="Popup Image">
+    <button id="closePopup" style="margin-top: 10px;">닫기</button>
+</div>
+<div id="popupOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
 <script>
 let isRecognitionActive = ${isRecognitionActive};
 let isVolumeOn = ${isVolumeOn};
@@ -563,7 +96,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	const timerPopup = document.getElementById('timerPopup');
 	const startTimerButton = document.getElementById('startTimerButton');
 	const closeTimerPopup = document.getElementById('closeTimerPopup');
-
+	const popup = document.getElementById('popup');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupImage = document.getElementById('popupImage');
+    const closePopup = document.getElementById('closePopup');
+    const questionIcon = document.querySelector('.fa-question');
+    
 
     // 마이크 아이콘 처리
     const microphoneIcon = document.querySelector(".fa-microphone-slash");
@@ -588,6 +126,24 @@ document.addEventListener("DOMContentLoaded", function() {
         volumeIcon.classList.remove("fa-volume-high");
         volumeIcon.classList.add("fa-volume-xmark");
     }
+    
+    // 팝업 열기
+    questionIcon.addEventListener('click', function () {
+        popup.style.display = 'block'; // 팝업 보이기
+        popupOverlay.style.display = 'block'; // 배경 오버레이 보이기
+    });
+
+    // 팝업 닫기
+    closePopup.addEventListener('click', function () {
+        popup.style.display = 'none'; // 팝업 숨기기
+        popupOverlay.style.display = 'none'; // 배경 오버레이 숨기기
+    });
+
+    // 오버레이 클릭 시 팝업 닫기
+    popupOverlay.addEventListener('click', function () {
+        popup.style.display = 'none';
+        popupOverlay.style.display = 'none';
+    });
     
 });
 
@@ -649,12 +205,12 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
             if (match) {
                 const minutes = parseInt(match[1], 10);
                 const seconds = match[2] ? parseInt(match[2], 10) : 0; // 초가 없으면 0으로 처리
-                console.log(`명령 인식: 타이머 설정 - ${minutes}분 ${seconds}초`);
+                console.log(`명령 인식: 타이머 설정 - \${minutes}분 \${seconds}초`);
                 remainingTime = (minutes * 60) + seconds;
 
                 // 타이머 시작
                 startTimer();
-                const confirmationMessage = new SpeechSynthesisUtterance(`${minutes}분 ${seconds}초로 타이머를 시작합니다.`);
+                const confirmationMessage = new SpeechSynthesisUtterance(`\${minutes}분 \${seconds}초로 타이머를 시작합니다.`);
                 confirmationMessage.lang = 'ko-KR';
                 synth.speak(confirmationMessage);
             } else {
@@ -674,7 +230,7 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
 
                 // 타이머 시작
                 startTimer();
-                const confirmationMessage = new SpeechSynthesisUtterance(`${minutes}분으로 타이머를 시작합니다.`);
+                const confirmationMessage = new SpeechSynthesisUtterance(`\${minutes}분으로 타이머를 시작합니다.`);
                 confirmationMessage.lang = 'ko-KR';
                 synth.speak(confirmationMessage);
             } else {
@@ -694,7 +250,7 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
 
                 // 타이머 시작
                 startTimer();
-                const confirmationMessage = new SpeechSynthesisUtterance(`${seconds}초로 타이머를 시작합니다.`);
+                const confirmationMessage = new SpeechSynthesisUtterance(`\${seconds}초로 타이머를 시작합니다.`);
                 confirmationMessage.lang = 'ko-KR';
                 synth.speak(confirmationMessage);
             } else {
@@ -727,6 +283,27 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
             synth.cancel();
             goDetail = true;
             document.getElementById('beforeButton').click();
+        }
+        else if (transcript.includes('도움말')) {
+            console.log("명령 인식: '도움말' -> 도움말 읽기 시작");
+            synth.cancel();
+            readHelp();
+        }
+        else if (transcript.includes('닫기')) {
+            console.log("명령 인식: '닫기'");
+            if (popup.style.display === 'block') {
+                // 팝업이 열려 있으면 닫기
+                popup.style.display = 'none';
+                popupOverlay.style.display = 'none';
+                const utterance = new SpeechSynthesisUtterance('도움말을 닫았습니다.');
+                utterance.lang = 'ko-KR';
+                synth.speak(utterance);
+            } else {
+                // 팝업이 열려 있지 않음
+                const utterance = new SpeechSynthesisUtterance('도움말이 켜져 있지 않습니다.');
+                utterance.lang = 'ko-KR';
+                synth.speak(utterance);
+            }
         }
         else {
             console.log("알 수 없는 명령: ", transcript);
@@ -825,7 +402,6 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
     
     function readManual() {
     	if (!isVolumeOn) {
-            console.log("볼륨이 꺼져 있어 도움말을 읽지 않습니다.");
             return;
         }
         const manualContent = document.querySelector('.ingredients-title');
@@ -836,6 +412,18 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
             return;
         }
         const utterance = new SpeechSynthesisUtterance(`${step}번째: \${manualContent.textContent}`);
+        utterance.lang = 'ko-KR';
+        synth.speak(utterance);
+    }
+    //도움말 읽기
+    function readHelp() {
+    	if (!isVolumeOn) {
+            console.log("볼륨이 꺼져 있어 도움말을 읽지 않습니다.");
+            return;
+        }
+        popup.style.display = 'block'; // 팝업 보이기
+        popupOverlay.style.display = 'block';
+        const utterance = new SpeechSynthesisUtterance(`가능한 명령어는 '다음', '이전', '다시', '도움말', '그만', 'n분m초 타이머', '마이크 끄기', '소리 꺼', '소리 켜', '처음으로', '닫기' 가 있습니다.`);
         utterance.lang = 'ko-KR';
         synth.speak(utterance);
     }
@@ -1044,17 +632,28 @@ function startTimer() {
         } else {
             const mins = Math.floor(remainingTime / 60);
             const secs = remainingTime % 60;
-            console.log(`남은 시간: ${mins}분 ${secs}초`);
             remainingTime--;
         }
     }, 1000);
 }
 
-// 타이머 종료 시 소리 재생
 function playAlarmSound() {
-    const audio = new Audio('/path/to/alarm-sound.mp3'); // 알림 소리 파일 경로
+    const audio = new Audio('/resources/timer/timer.mp3'); // 알림 소리 파일 경로
     audio.play();
-    alert('타이머가 종료되었습니다!');
+    showCustomAlert();
+}
+
+function showCustomAlert() {
+    const customAlert = document.getElementById('customAlert');
+    const overlay = document.getElementById('overlay');
+
+    customAlert.style.display = 'block';
+    overlay.style.display = 'block';
+
+    setTimeout(() => {
+        customAlert.style.display = 'none';
+        overlay.style.display = 'none';
+    }, 4000); // 4초 후 닫힘
 }
 </script>
 </body>

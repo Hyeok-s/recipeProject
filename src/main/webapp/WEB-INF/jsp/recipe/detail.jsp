@@ -10,343 +10,25 @@
 	href="https://fonts.googleapis.com/css2?family=Diphylleia&family=Do+Hyeon&family=Gothic+A1&family=Gowun+Batang&family=Nanum+Gothic+Coding&display=swap"
 	rel="stylesheet">
 <head>
+<link rel="stylesheet" href="/resources/css/recipeDetail.css" />
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recipe Book</title>
+
+<script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
 <style>
-body {
-    margin: 0;
-    font-family: 'Gowun Batang', serif;
-}
-
-.bookBody {
-    margin-top: 20px;
-    background: #f7f2e9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    perspective: 1500px;
-}
-
-.book-cover {
-    position: relative;
-    width: 80%;
-    max-width: 1420px;
-    height: 700px;
-    background: linear-gradient(145deg, #e0d8c4, #fff);
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 30px;
-    transform-style: preserve-3d; /* 3D 회전 효과 적용을 위한 설정 */
-    transition: transform 1s ease-in-out; /* 부드러운 회전 애니메이션 */
-}
-
-.book-cover::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 2px;
-    height: 100%;
-    background: #ccc;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1), 2px 0 5px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-}
-
-.book-title {
-    position: absolute;
-    font-size: 48px;
-    margin: 0;
-    color: #6a553e;
-    font-family: "Gowun Batang", serif;
-    font-weight: 700;
-    font-style: normal;
-    top: -120px;
-}
-
-.book-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2;
-}
-
-.book-image img {
-    max-width: 320px;
-	width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    object-fit: cover;
-    position: absolute;
-}
-
-.left-image {
-    position: absolute;
-    left: 0;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.left-image img {
-    max-width: 300px;
-    border-radius: 10px;
-    transform-origin: left; /* 왼쪽에서 회전하도록 설정 */
-}
-
-.ingredients {
-    width: 70%;
-    padding: 20px;
-    text-align: left;
-    margin-right: 80px;
-}
-
-.ingredients-title {
-    font-weight: bold;
-    font-size: 35px;
-    margin-bottom: 30px;
-    font-family: 'Nanum Gothic Coding', monospace;
-}
-
-.ingredients li {
-    margin-bottom: 5px;
-    font-size: 20px;
-    line-height: 1.6;
-    color: #6a553e;
-    padding-left: 15px;
-    position: relative;
-    list-style: none;
-    font-weight: bold;
-}
-
-.ingredients li::before {
-    content: "✔";
-    position: absolute;
-    left: 0;
-    font-size: 14px;
-    color: #6a994e;
-}
-
-.right-page {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: left;
-    width: 50%;
-    transform-origin: left; /* 왼쪽을 기준으로 회전 */
-    backface-visibility: hidden; /* 뒷면이 보이지 않도록 설정 */
-}
-
-.nutrition {
-    width: 70%;
-    padding: 20px;
-    text-align: left;
-    margin-left: 200px;
-    position: absolute;
-    top: 40px;
-}
-
-.nutrition-info {
-    width: 80%;
-    padding: 20px;
-    background: #faf8f2;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Nanum Gothic Coding', monospace;
-    color: #444;
-}
-
-.nutrition-info h2 {
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #6a553e;
-    border-bottom: 2px solid #e0d8c4;
-    padding-bottom: 10px;
-}
-
-.info-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    margin-bottom: 12px;
-    font-size: 18px;
-    color: #5a5a5a;
-    border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.tip-container {
-    position: absolute;
-    bottom: 30px;
-    width: 80%;
-    background: #fff;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Nanum Gothic Coding', monospace;
-    color: #6a553e;
-}
-
-.tip-title {
-    position: absolute;
-    top: -19px;
-    left: -19px;
-    color: #ff0000;
-    font-size: 28px;
-    font-weight: bold;
-    padding: 5px 10px;
-}
-
-.tip-content {
-    font-size: 18px;
-    font-weight: bold;
-    line-height: 1.5;
-    margin-top: 10px;
-}
-
-/* 애니메이션 키프레임 */
-@keyframes pageFlip {
-    0% {
-        transform: rotateY(0deg);
-        opacity: 1;
-    }
-    50% {
-        transform: rotateY(-90deg);
-        opacity: 0.5;
-    }
-    100% {
-        transform: rotateY(-180deg);
-        opacity: 1;
-    }
-}
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
-}
-
-.flipping .left-image {
-    animation: fadeOut 1s ease-in-out forwards;
-    z-index: 1; /* 오른쪽 페이지 뒤로 들어가도록 조정 */
-}
-
-.right-page {
-    transform-origin: left; /* 왼쪽을 기준으로 회전 */
-    transform: rotateY(0deg);
-    transition: transform 1s ease-in-out;
-    backface-visibility: hidden;
-}
-
-.flipping .right-page {
-    animation: pageFlip 1s ease-in-out forwards;
-    z-index: 2; /* 오른쪽 페이지가 왼쪽 페이지를 덮도록 설정 */
-}
-
-@keyframes fadeOutImage {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5; /* 반투명 상태 */
-    }
-    100% {
-        opacity: 0; /* 완전히 사라짐 */
-    }
-}
-
-.fade-out-image {
-    animation: fadeOutImage 1s ease-in-out forwards; /* 이미지 사라지는 애니메이션 */
-}
-.next-button {
-    position: absolute;
-    right: -28%;
-    background-color: transparent;
-    border-radius: 50%;
-    font-size: 120px;
-    color: #6a553e;
-    z-index: 3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-style: none;
-    animation: pulse 2s infinite; /* 애니메이션 추가 */
-    transition: transform 0.2s ease; /* 클릭 시 부드러운 반응 */
-}
-
-.next-button::after {
-    content: ">";
-    background: linear-gradient(90deg, transparent, #6a553e, transparent);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: gradient-flicker 1.5s infinite; /* 텍스트 빈 부분 애니메이션 */
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.2);
-    }
-}
-.fa-solid{
-	padding: 26px;
-}
-.microphone {
+.question {
     position: absolute;
     top: 10px;
-    right: 65px;
-    font-size: 24px;
+    right: 124px;
+    font-size: 25px;
     color: #6a553e;
     cursor: pointer;
     z-index: 10;
     align-items: center;
     display: inline-flex;
-}
-
-.dot {
- position: absolute;
- top: 50%;
- left: 26%;
- transform: translate(-50%, -50%);
-  color: #6a553e;
-  font-size: 0.4em;
-  }
-  
-.volume {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 24px;
-  color: red;
-  cursor: pointer;
-  z-index: 10;
-  align-items: center;
-  display: inline-flex;   
-}
-
-.fa-volume-xmark{
-	color: #6a553e;
-}
+    }
 </style>
-<script src="https://kit.fontawesome.com/adad881590.js" crossorigin="anonymous"></script>
 </head>
 <body>
 	<%@ include file="/WEB-INF/jsp/common/header.jsp"%>
@@ -373,6 +55,7 @@ body {
   				<span class="dot">●</span>
 			</i>
 			<i class="fa-solid fa-volume-high volume"></i>
+			<i class="fa-solid fa-question question"></i>
 				<div class="nutrition">
 					<div class="ingredients-title">영양 정보</div>
 					<div class="nutrition-info">
@@ -427,11 +110,24 @@ body {
 			</div>
 		</div>
 	</div>
+	
+	<!-- 팝업 창 -->
+	<div id="popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+	    <img id="popupImage" src="/resources/img/help1.png" alt="Popup Image">
+	    <button id="closePopup" style="margin-top: 10px;">닫기</button>
+	</div>
+	<div id="popupOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
 <script>
 let isRecognitionActive = ${isRecognitionActive};
 let isVolumeOn = ${isVolumeOn};
 
 document.addEventListener("DOMContentLoaded", function() {
+	const popup = document.getElementById('popup');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupImage = document.getElementById('popupImage');
+    const closePopup = document.getElementById('closePopup');
+    const questionIcon = document.querySelector('.fa-question');
+    
     // 마이크 아이콘 처리
     const microphoneIcon = document.querySelector(".fa-microphone-slash");
     if (${isRecognitionActive}) {
@@ -455,6 +151,24 @@ document.addEventListener("DOMContentLoaded", function() {
         volumeIcon.classList.remove("fa-volume-high");
         volumeIcon.classList.add("fa-volume-xmark");
     }
+    
+ // 팝업 열기
+    questionIcon.addEventListener('click', function () {
+        popup.style.display = 'block'; // 팝업 보이기
+        popupOverlay.style.display = 'block'; // 배경 오버레이 보이기
+    });
+
+    // 팝업 닫기
+    closePopup.addEventListener('click', function () {
+        popup.style.display = 'none'; // 팝업 숨기기
+        popupOverlay.style.display = 'none'; // 배경 오버레이 숨기기
+    });
+
+    // 오버레이 클릭 시 팝업 닫기
+    popupOverlay.addEventListener('click', function () {
+        popup.style.display = 'none';
+        popupOverlay.style.display = 'none';
+    });
 });
 //기존 음성 인식 코드와 함께 추가
 if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
@@ -512,6 +226,22 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
             console.log("명령 인식: '소리 켜기' -> 소리 켜기");
             synth.cancel();
             document.querySelector('.volume').click();
+        }
+        else if (transcript.includes('닫기')) {
+            console.log("명령 인식: '닫기'");
+            if (popup.style.display === 'block') {
+                // 팝업이 열려 있으면 닫기
+                popup.style.display = 'none';
+                popupOverlay.style.display = 'none';
+                const utterance = new SpeechSynthesisUtterance('도움말을 닫았습니다.');
+                utterance.lang = 'ko-KR';
+                synth.speak(utterance);
+            } else {
+                // 팝업이 열려 있지 않음
+                const utterance = new SpeechSynthesisUtterance('도움말이 켜져 있지 않습니다.');
+                utterance.lang = 'ko-KR';
+                synth.speak(utterance);
+            }
         }
         else {
             console.log("알 수 없는 명령: ", transcript);
@@ -659,7 +389,9 @@ if ('webkitSpeechRecognition' in window && 'speechSynthesis' in window) {
             console.log("볼륨이 꺼져 있어 도움말을 읽지 않습니다.");
             return;
         }
-        const utterance = new SpeechSynthesisUtterance(`가능한 명령어는 '재료', '다음', '꿀팁', '그만', '도움말', '마이크끄기'. '소리 꺼', '소리 켜' 가 있습니다.`);
+        popup.style.display = 'block'; // 팝업 보이기
+        popupOverlay.style.display = 'block';
+        const utterance = new SpeechSynthesisUtterance(`가능한 명령어는 '다음', '재료', '꿀팁', '도움말', '그만', '마이크끄기'. '소리 꺼', '소리 켜', '닫기' 가 있습니다.`);
         utterance.lang = 'ko-KR';
         synth.speak(utterance);
     }
