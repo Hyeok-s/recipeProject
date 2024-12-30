@@ -24,7 +24,6 @@
 
 
 ## 구현
-<br/>
 ### 메인화면
 ![1](https://github.com/user-attachments/assets/79a528cf-fd4a-4f38-a342-4eeee164f4ae)
 <br/>
