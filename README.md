@@ -22,7 +22,7 @@
 - 음식 재료 사진을 통해 만들 수 있는 레시피 추천
 - 토큰 방식 메일 인증
 
-
+개발 과정 및 자세한 ui설명(노션 링크): https://rift-icon-c56.notion.site/10d89200cbe880369f16d5773eac61ad
 ## 구현
 ### 메인화면
 ![1](https://github.com/user-attachments/assets/79a528cf-fd4a-4f38-a342-4eeee164f4ae)
@@ -50,5 +50,3 @@
 ![6](https://github.com/user-attachments/assets/f7d1939b-7d35-401c-b6b1-8306cbe6599e)
 
 공공데이터를 활용해 요리 레시피를 사용자에게 설명해주고 음성인식으로 요리하면서 질문하거나 다음해야 할 것을 알 수 있게 하였으며, 타이머, 메모장 등 요리 초보자들을 위해 여러 편리한 기능을 제공합니다.
-
-개발 과정 및 자세한 ui설명(노션 링크): https://rift-icon-c56.notion.site/10d89200cbe880369f16d5773eac61ad
